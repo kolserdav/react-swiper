@@ -365,9 +365,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
       window.removeEventListener('resize', resizeHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [next]);
-
-  console.log(swipes);
+  }, [next, _buttonPrevRef, _buttonNextRef]);
 
   return (
     <div className={styles.container} ref={containerRef}>
