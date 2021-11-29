@@ -14,16 +14,16 @@ import 'swiper/dist/index.css';
 const getNext: GetSwipeHandler = (old) => {
   const id = old + 1;
   return {
-    id: id < 5 ? id : 0,
-    children: id < 5 ? <h1>Test {id}</h1> : null,
+    id: id < 5 ? id : null,
+    children: id < 5 ? <h1>Test {id}</h1> : <div></div>,
   };
 };
 
 const getPrevios: GetSwipeHandler = (old) => {
   const id = old - 1;
   return {
-    id: id > 0 ? id : 0,
-    children: id > 0 ? <h1>Test {id}</h1> : null,
+    id: id > 0 ? id : null,
+    children: id > 0 ? <h1>Test {id}</h1> : <div></div>,
   };
 };
 

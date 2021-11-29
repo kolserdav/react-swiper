@@ -30,8 +30,8 @@ export const SWIPE_TRANSITION_TIMEOUT = 400;
  * One of swipe card
  */
 export interface Swipe {
-  id: number;
-  children: React.ReactElement | React.ReactElement[] | null;
+  id: number | null;
+  children: React.ReactElement | React.ReactElement[];
 }
 
 /**
@@ -110,7 +110,7 @@ const getSwipes = (__prev: Swipe, __current: Swipe, __next: Swipe): SwipeFull[] 
  */
 const getDefaultSwipe = (): Swipe => ({
   id: Math.ceil(Math.random() * 1000),
-  children: null,
+  children: <div></div>,
 });
 
 const refs: {
@@ -203,7 +203,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     if (Math.abs(_lastLeft) > width / 3) {
       setLeft(0);
       if (_lastLeft < 0) {
-        if (next?.children === null) {
+        if (!next?.id) {
           setBackClass();
           return 1;
         }
@@ -211,7 +211,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         setCurrent(next);
         setNext(await getNext(next?.id || 0));
       } else {
-        if (prev?.children === null) {
+        if (!prev?.id) {
           setBackClass();
           return 1;
         }
@@ -337,8 +337,8 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     if (!current || !prev || !next) {
       setCurrent(defaultCurrent);
       (async (): Promise<void> => {
-        setNext(await getNext(defaultCurrent.id));
-        setPrev(await getPrev(defaultCurrent.id));
+        setNext(await getNext(defaultCurrent.id || 0));
+        setPrev(await getPrev(defaultCurrent.id || 0));
       })();
     }
     // run invitation animation
@@ -367,17 +367,19 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [next]);
 
+  console.log(swipes);
+
   return (
     <div className={styles.container} ref={containerRef}>
       {/** absolute position cards */}
       {swipes.map((item) => (
-        <div key={item.id}>
-          {item.children && width ? (
+        <div key={item.id} style={!item?.id ? { display: 'none' } : {}}>
+          {item.id && width && (
             <div
               onTouchMove={onTouchWrapper('onTouchMove')}
               onTouchStart={onTouchWrapper('onTouchStart')}
               onTouchEnd={onTouchWrapper('onTouchEnd')}
-              id={item.id.toString()}
+              id={item.id?.toString()}
               style={
                 item.type === 'current'
                   ? { width, height, left }
@@ -394,17 +396,15 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
               {/** Block of content */}
               <div className={clsx(styles.content, className)}>{item.children}</div>
             </div>
-          ) : (
-            <div></div>
           )}
         </div>
       ))}
-      {typeof isMobile !== 'undefined' && !isMobile && !prevButtonRef && prev?.children !== null && (
+      {typeof isMobile !== 'undefined' && !isMobile && !prevButtonRef && prev?.id && (
         <div className={clsx(styles.button, styles.button_prev)} ref={_buttonPrevRef}>
           {windowWidth < 3000 ? <NextIcon /> : <NextBigIcon />}
         </div>
       )}
-      {typeof isMobile !== 'undefined' && !isMobile && !nextButtonRef && next?.children !== null && (
+      {typeof isMobile !== 'undefined' && !isMobile && !nextButtonRef && next?.id && (
         <div className={clsx(styles.button, styles.button_next)} ref={_buttonNextRef}>
           {windowWidth < 3000 ? <NextIcon /> : <NextBigIcon />}
         </div>
