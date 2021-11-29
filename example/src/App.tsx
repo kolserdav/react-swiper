@@ -38,8 +38,6 @@ const App = (): React.ReactElement => {
     <div>
       <Swiper
         defaultCurrent={_getNext(0)}
-        defaultPrev={_getNext(-1)}
-        defaultNext={_getNext(1)}
         getNext={getNext}
         getPrev={getPrevios}
         invitationAnimation={true}

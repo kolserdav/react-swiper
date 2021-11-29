@@ -33,16 +33,19 @@ const getPrevious: GetSwipeHandler = (old) => {
   };
 };
 
+/**
+ * Typescript syntetic method
+ * */
+const _getNext = (id: number): Swipe => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const res: any = getNext(id);
+  return res;
+};
+
 const App = (): React.ReactElement => {
   return (
     <div>
-      <Swiper
-        defaultCurrent={getNext(0)}
-        defaultPrev={getPrevious(1)}
-        defaultNext={getNext(1)}
-        getNext={getNext}
-        getPrev={getPrevious}
-      />
+      <Swiper defaultCurrent={_getNext(0)} getNext={getNext} getPrev={getPrevious} />
     </div>
   );
 };

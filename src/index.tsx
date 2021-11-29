@@ -37,7 +37,7 @@ export interface Swipe {
 /**
  * Callback for get next or previous card content
  */
-export type GetSwipeHandler = (oldId: number) => Swipe | null | Promise<Swipe | null>;
+export type GetSwipeHandler = (oldId: number) => Swipe | Promise<Swipe>;
 
 /**
  * One of swipe card internal
@@ -59,16 +59,6 @@ interface SwiperProps {
    * Current card content
    */
   defaultCurrent: Swipe;
-
-  /**
-   * Next card content
-   */
-  defaultNext: Swipe;
-
-  /**
-   * Previous card content
-   */
-  defaultPrev: Swipe;
 
   /**
    * Get next card handler
@@ -115,6 +105,16 @@ const getSwipes = (__prev: Swipe, __current: Swipe, __next: Swipe): SwipeFull[] 
   return result;
 };
 
+/**
+ * Get default swipe with random id
+ */
+const getDefaultSwipe = (): Swipe => {
+  return {
+    id: Math.ceil(Math.random() * 1000),
+    children: null,
+  };
+};
+
 const refs: {
   [key: number]: RefObject<HTMLDivElement>;
 } = {};
@@ -129,8 +129,6 @@ let animated = false;
 const Swiper = (props: SwiperProps): React.ReactElement => {
   const {
     defaultCurrent,
-    defaultNext,
-    defaultPrev,
     getNext,
     getPrev,
     className,
@@ -157,7 +155,8 @@ const Swiper = (props: SwiperProps): React.ReactElement => {
    * Create memoized swipes
    */
   const swipes = useMemo(
-    () => getSwipes(prev || defaultPrev, current || defaultCurrent, next || defaultNext),
+    () =>
+      getSwipes(prev || getDefaultSwipe(), current || defaultCurrent, next || getDefaultSwipe()),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [next]
   );
@@ -339,8 +338,10 @@ const Swiper = (props: SwiperProps): React.ReactElement => {
     // set start cards
     if (!current || !prev || !next) {
       setCurrent(defaultCurrent);
-      setNext(defaultNext);
-      setPrev(defaultPrev);
+      (async (): Promise<void> => {
+        setNext(await getNext(defaultCurrent.id));
+        setPrev(await getPrev(defaultCurrent.id));
+      })();
     }
     // run invitation animation
     if (invitationAnimation && width && !animated) {

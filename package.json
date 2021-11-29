@@ -1,6 +1,6 @@
 {
   "name": "@kolserdav/swiper",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Simple and powerfull react swiper component",
   "author": "kolserdav",
   "license": "MIT",
@@ -41,6 +41,7 @@
     "@types/node": "^12.12.38",
     "@types/react": "^16.9.27",
     "@types/react-dom": "^16.9.7",
+    "@types/uuid": "^8.3.3",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
     "babel-eslint": "^10.0.3",
@@ -72,7 +73,8 @@
     "dist"
   ],
   "dependencies": {
-    "clsx": "^1.1.1"
+    "clsx": "^1.1.1",
+    "uuid": "^8.3.2"
   },
   "fhead": {
     "root": ".",
