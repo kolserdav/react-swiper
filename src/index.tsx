@@ -1,6 +1,16 @@
-import React, { useMemo, useState, createRef, RefObject, useEffect, TouchEvent } from 'react';
+import React, {
+  useMemo,
+  useState,
+  useRef,
+  createRef,
+  RefObject,
+  useEffect,
+  TouchEvent,
+} from 'react';
 import clsx from 'clsx';
 import styles from './index.module.css';
+import { ReactComponent as NextIcon } from './icons/navigate_next_black_24dp.svg';
+import { ReactComponent as NextBigIcon } from './icons/navigate_next_black_48dp.svg';
 
 const ANIMATION_TIMEOUT = 400;
 
@@ -9,13 +19,13 @@ const ANIMATION_TIMEOUT = 400;
  */
 export interface Swipe {
   id: number;
-  children: React.ReactElement | React.ReactElement[];
+  children: React.ReactElement | React.ReactElement[] | null;
 }
 
 /**
  * Callback for get next or previous card content
  */
-export type GetSwipeHandler = (oldId: number) => Swipe | Promise<Swipe>;
+export type GetSwipeHandler = (oldId: number) => Swipe | null | Promise<Swipe | null>;
 
 /**
  * One of swipe card internal
@@ -66,12 +76,12 @@ interface SwiperProps {
   /**
    * Button for swipe to next
    */
-  nextButtonRef?: RefObject<HTMLButtonElement | undefined>;
+  nextButtonRef?: RefObject<HTMLButtonElement | HTMLDivElement | undefined>;
 
   /**
    * Button for swipe to previous
    */
-  prevButtonRef?: RefObject<HTMLButtonElement | undefined>;
+  prevButtonRef?: RefObject<HTMLButtonElement | HTMLDivElement | undefined>;
 }
 
 /**
@@ -98,19 +108,22 @@ let lastLeft: number;
 /**
  * Swiper component
  */
-const Swiper = (props: SwiperProps) => {
+const Swiper = (props: SwiperProps): React.ReactElement => {
   const { current, next, prev, getNext, getPrev, className, prevButtonRef, nextButtonRef } = props;
 
-  const [_current, setCurrent] = useState<Swipe>();
-  const [_prev, setPrev] = useState<Swipe>();
-  const [_next, setNext] = useState<Swipe>();
+  const [_current, setCurrent] = useState<Swipe | null>();
+  const [_prev, setPrev] = useState<Swipe | null>();
+  const [_next, setNext] = useState<Swipe | null>();
   const [windowWidth, setWindowWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
   const [width, setWidth] = useState<number>(0);
   const [_left, _setLeft] = useState<number>(0);
   const [left, setLeft] = useState<number>(0);
+  const [isMobile, setIsMobile] = useState<boolean>();
 
-  const containerRef = createRef<HTMLDivElement>();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const _buttonPrevRef = useRef<HTMLDivElement>(null);
+  const _buttonNextRef = useRef<HTMLDivElement>(null);
 
   /**
    * Create memoized swipes
@@ -132,7 +145,7 @@ const Swiper = (props: SwiperProps) => {
   /**
    * Set to cards classes for in animation
    */
-  const setGoClass = () => {
+  const setGoClass = (): void => {
     getRef(_next?.id || 0).current?.classList.add(styles.go);
     getRef(_prev?.id || 0).current?.classList.add(styles.go);
     getRef(_current?.id || 0).current?.classList.add(styles.go);
@@ -146,7 +159,7 @@ const Swiper = (props: SwiperProps) => {
   /**
    * Set to cards classes for out animation
    */
-  const setBackClass = () => {
+  const setBackClass = (): void => {
     getRef(_next?.id || 0).current?.classList.add(styles.back);
     getRef(_prev?.id || 0).current?.classList.add(styles.back);
     getRef(_current?.id || 0).current?.classList.add(styles.back);
@@ -161,7 +174,7 @@ const Swiper = (props: SwiperProps) => {
   /**
    * Run swipe animation
    */
-  const swipe = async (_lastLeft: number) => {
+  const swipe = async (_lastLeft: number): Promise<void> => {
     if (Math.abs(_lastLeft) > width / 3) {
       setLeft(0);
       if (_lastLeft < 0) {
@@ -182,7 +195,7 @@ const Swiper = (props: SwiperProps) => {
   /**
    * Touch event handler
    */
-  const onTouchHandler = async (name: TouchName, e: TouchEvent) => {
+  const onTouchHandler = async (name: TouchName, e: TouchEvent): Promise<void> => {
     const { touches } = e;
     const clientX = touches[0]?.clientX;
     startClientX = startClientX || 0;
@@ -204,7 +217,7 @@ const Swiper = (props: SwiperProps) => {
   /**
    * Wait helper
    */
-  const wait = async (miliseconds: number) => {
+  const wait = async (miliseconds: number): Promise<void> => {
     await new Promise((resolve) => {
       setTimeout(() => {
         resolve(0);
@@ -217,16 +230,16 @@ const Swiper = (props: SwiperProps) => {
    */
   const onTouchWrapper =
     (name: TouchName): ((event: TouchEvent<HTMLDivElement>) => void) =>
-    (e) => {
+    (e): void => {
       onTouchHandler(name, e);
     };
 
   /**
    * On next or previous button click handler
    */
-  const clickHandler = (origin: 'next' | 'prev') => {
+  const clickHandler = (origin: 'next' | 'prev'): (() => Promise<void>) => {
     const isNext = origin === 'next';
-    return async () => {
+    return async (): Promise<void> => {
       const coeff = isNext ? -1 : 1;
       const leftVal = width * coeff;
       if (isNext) {
@@ -250,12 +263,30 @@ const Swiper = (props: SwiperProps) => {
    */
   const clickPrevHandler = clickHandler('prev');
 
+  const resizeHandler = (): void => {
+    const _width = containerRef?.current?.parentElement?.getBoundingClientRect()?.width;
+    const _height = containerRef?.current?.parentElement?.getBoundingClientRect()?.height;
+    const __left = containerRef?.current?.parentElement?.getBoundingClientRect()?.left;
+    const _windowWidth = document.body.clientWidth;
+    if (_width && _height) {
+      console.log(_width);
+      setWidth(_width);
+      setHeight(_height);
+    }
+    if (__left) {
+      setLeft(__left);
+    }
+    if (_windowWidth) {
+      setWindowWidth(_windowWidth);
+    }
+  };
+
   useEffect(() => {
     const _width = containerRef?.current?.parentElement?.getBoundingClientRect()?.width;
     const _height = containerRef?.current?.parentElement?.getBoundingClientRect()?.height;
     const __left = containerRef?.current?.parentElement?.getBoundingClientRect()?.left;
-    const prevButton = prevButtonRef?.current;
-    const nextButton = nextButtonRef?.current;
+    const prevButton = prevButtonRef ? prevButtonRef?.current : _buttonPrevRef.current;
+    const nextButton = nextButtonRef ? nextButtonRef?.current : _buttonNextRef.current;
     const _windowWidth = document.body.clientWidth;
     if (_width && !width && _height && !height) {
       setWidth(_width);
@@ -275,11 +306,17 @@ const Swiper = (props: SwiperProps) => {
       setNext(next);
       setPrev(prev);
     }
+    // set is mobile
+    if (typeof isMobile === 'undefined') {
+      setIsMobile('ontouchstart' in window || typeof navigator.msMaxTouchPoints !== 'undefined');
+    }
     prevButton?.addEventListener('click', clickPrevHandler);
     nextButton?.addEventListener('click', clickNextHandler);
-    return () => {
+    window.addEventListener('resize', resizeHandler);
+    return (): void => {
       prevButton?.removeEventListener('click', clickPrevHandler);
       nextButton?.removeEventListener('click', clickNextHandler);
+      window.removeEventListener('resize', resizeHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_next]);
@@ -311,6 +348,16 @@ const Swiper = (props: SwiperProps) => {
           <div className={clsx(styles.content, className)}>{item.children}</div>
         </div>
       ))}
+      {!isMobile && !prevButtonRef && (
+        <div className={clsx(styles.button, styles.button_prev)} ref={_buttonPrevRef}>
+          {windowWidth < 3000 ? <NextIcon /> : <NextBigIcon />}
+        </div>
+      )}
+      {!isMobile && !nextButtonRef && (
+        <div className={clsx(styles.button, styles.button_next)} ref={_buttonNextRef}>
+          {windowWidth < 3000 ? <NextIcon /> : <NextBigIcon />}
+        </div>
+      )}
     </div>
   );
 };
