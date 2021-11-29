@@ -7,22 +7,47 @@
 ## Install
 
 ```bash
-npm install --save swiper
+npm install --save @kolserdav/swiper
 ```
 
 ## Usage
 
 ```tsx
-import React, { Component } from 'react'
+import React from 'react';
+import Swiper, { GetSwipeHandler } from 'swiper';
+import 'swiper/dist/index.css';
 
-import MyComponent from 'swiper'
-import 'swiper/dist/index.css'
+const getNext: GetSwipeHandler = (old) => {
+  const id = old + 1;
+  return {
+    id,
+    children: id < 5 ? <h1>Test {id}</h1> : null,
+  };
+};
 
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
-}
+const getPrevious: GetSwipeHandler = (old) => {
+  const id = old - 1;
+  return {
+    id,
+    children: id > 0 ? <h1>Test {id}</h1> : null,
+  };
+};
+
+const App = (): React.ReactElement => {
+  return (
+    <div>
+      <Swiper
+        defaultCurrent={getNext(0)}
+        defaultPrev={getPrevious(1)}
+        defaultNext={getNext(1)}
+        getNext={getNext}
+        getPrev={getPrevious}
+      />
+    </div>
+  );
+};
+
+export default App;
 ```
 
 ## License

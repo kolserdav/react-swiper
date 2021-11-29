@@ -1,43 +1,50 @@
-import React from 'react'
+/******************************************************************************************
+ * Repository: https://github.com/kolserdav/swiper.git
+ * Author: Sergey Kolmiller
+ * Email: <serega12101983@gmail.com>
+ * License: MIT
+ * License Text: The code is distributed as is. There are no guarantees regarding the functionality of the code or parts of it.
+ * Copyright: kolserdav, All rights reserved (c)
+ * Create date: Mon Nov 29 2021 16:18:08 GMT+0700 (Krasnoyarsk Standard Time)
+ ******************************************************************************************/
+import React from 'react';
+import Swiper, { GetSwipeHandler, Swipe } from 'swiper';
+import 'swiper/dist/index.css';
 
-import Swiper, { GetSwipeHandler } from 'swiper'
-import 'swiper/dist/index.css'
-
-const getNext: GetSwipeHandler = (old: number) => {
+const getNext: GetSwipeHandler = (old) => {
   const id = old + 1;
   return {
-    id,
-    children: <h1>Test {id}</h1>,
+    id: id < 5 ? id : 0,
+    children: id < 5 ? <h1>Test {id}</h1> : null,
   };
 };
 
-const getPrevios: GetSwipeHandler = (old: number) => {
+const getPrevios: GetSwipeHandler = (old) => {
   const id = old - 1;
   return {
-    id,
-    children: <h1>Test {id}</h1>,
+    id: id > 0 ? id : 0,
+    children: id > 0 ? <h1>Test {id}</h1> : null,
   };
 };
 
-const _getNext = (id: number)=> {
+const _getNext = (id: number): Swipe => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const res: any = getNext(id);
   return res;
 };
 
-const App = () => {
+const App = (): React.ReactElement => {
+  return (
+    <div>
+      <Swiper
+        defaultCurrent={_getNext(0)}
+        defaultPrev={_getNext(-1)}
+        defaultNext={_getNext(1)}
+        getNext={getNext}
+        getPrev={getPrevios}
+      />
+    </div>
+  );
+};
 
-
-
-  return <div>
-  <Swiper
-    current={_getNext(0)}
-    prev={_getNext(-1)}
-    next={_getNext(1)}
-    getNext={getNext}
-    getPrev={getPrevios}
-  />
-</div>
-}
-
-export default App
+export default App;

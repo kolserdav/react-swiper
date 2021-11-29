@@ -1,6 +1,6 @@
 {
   "name": "@kolserdav/swiper",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Simple and powerfull react swiper component",
   "author": "kolserdav",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
     "test:watch": "react-scripts test --env=jsdom",
     "predeploy": "cd example && yarn install && yarn run build",
-    "deploy": "gh-pages -d example/build"
+    "deploy": "fhead && gh-pages -d example/build"
   },
   "peerDependencies": {
     "react": "^16.0.0"
@@ -66,5 +66,23 @@
   ],
   "dependencies": {
     "clsx": "^1.1.1"
+  },
+  "fhead": {
+    "root": ".",
+    "repository": "https://github.com/kolserdav/swiper.git",
+    "patterns": [
+      ".ts",
+      ".tsx"
+    ],
+    "exclude": [
+      "node_modules",
+      ".next"
+    ],
+    "name": "Sergey Kolmiller",
+    "email": "serega12101983@gmail.com",
+    "license": "MIT",
+    "licenseText": "The code is distributed as is. There are no guarantees regarding the functionality of the code or parts of it.",
+    "copyright": "kolserdav, All rights reserved (c)",
+    "renewAll": false
   }
 }

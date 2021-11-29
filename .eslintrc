@@ -39,17 +39,10 @@
       }
     ],
     "prettier/prettier": 1,
-    "react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }],
+    "react/jsx-filename-extension": 0,
     "react/jsx-props-no-spreading": 0,
     "react/jsx-fragments": 0,
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        "ts": "never",
-        "tsx": "never"
-      }
-    ],
+    "import/extensions": 0,
     "react/jsx-boolean-value": 0,
     "no-underscore-dangle": 0,
     "arrow-body-style": 1,
@@ -57,6 +50,7 @@
     "spaced-comment": 0,
     "@typescript-eslint/ban-ts-comment": 1,
     "no-plusplus": 0,
-    "@typescript-eslint/no-namespace": 0
+    "@typescript-eslint/no-namespace": 0,
+    "no-console": 1
   }
 }
