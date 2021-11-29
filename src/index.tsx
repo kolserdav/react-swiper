@@ -94,6 +94,11 @@ interface SwiperProps {
    * Button for swipe to previous
    */
   prevButtonRef?: RefObject<HTMLButtonElement | HTMLDivElement | undefined>;
+
+  /**
+   * invitation animation
+   */
+  invitationAnimation?: boolean;
 }
 
 /**
@@ -116,6 +121,7 @@ const refs: {
 
 let startClientX: number;
 let lastLeft: number;
+let animated = false;
 
 /**
  * Swiper component
@@ -130,11 +136,12 @@ const Swiper = (props: SwiperProps): React.ReactElement => {
     className,
     prevButtonRef,
     nextButtonRef,
+    invitationAnimation,
   } = props;
 
-  const [_current, setCurrent] = useState<Swipe | null>();
-  const [_prev, setPrev] = useState<Swipe | null>();
-  const [_next, setNext] = useState<Swipe | null>();
+  const [current, setCurrent] = useState<Swipe | null>();
+  const [prev, setPrev] = useState<Swipe | null>();
+  const [next, setNext] = useState<Swipe | null>();
   const [windowWidth, setWindowWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
   const [width, setWidth] = useState<number>(0);
@@ -150,9 +157,9 @@ const Swiper = (props: SwiperProps): React.ReactElement => {
    * Create memoized swipes
    */
   const swipes = useMemo(
-    () => getSwipes(_prev || defaultPrev, _current || defaultCurrent, _next || defaultNext),
+    () => getSwipes(prev || defaultPrev, current || defaultCurrent, next || defaultNext),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [_next]
+    [next]
   );
 
   /**
@@ -167,13 +174,13 @@ const Swiper = (props: SwiperProps): React.ReactElement => {
    * Set to cards classes for in animation
    */
   const setGoClass = (): void => {
-    getRef(_next?.id || 0).current?.classList.add(styles.go);
-    getRef(_prev?.id || 0).current?.classList.add(styles.go);
-    getRef(_current?.id || 0).current?.classList.add(styles.go);
+    getRef(next?.id || 0).current?.classList.add(styles.go);
+    getRef(prev?.id || 0).current?.classList.add(styles.go);
+    getRef(current?.id || 0).current?.classList.add(styles.go);
     setTimeout(() => {
-      getRef(_next?.id || 0).current?.classList.remove(styles.go);
-      getRef(_prev?.id || 0).current?.classList.remove(styles.go);
-      getRef(_current?.id || 0).current?.classList.remove(styles.go);
+      getRef(next?.id || 0).current?.classList.remove(styles.go);
+      getRef(prev?.id || 0).current?.classList.remove(styles.go);
+      getRef(current?.id || 0).current?.classList.remove(styles.go);
     }, SWIPE_TRANSITION_TIMEOUT);
   };
 
@@ -181,14 +188,14 @@ const Swiper = (props: SwiperProps): React.ReactElement => {
    * Set to cards classes for out animation
    */
   const setBackClass = (): void => {
-    getRef(_next?.id || 0).current?.classList.add(styles.back);
-    getRef(_prev?.id || 0).current?.classList.add(styles.back);
-    getRef(_current?.id || 0).current?.classList.add(styles.back);
+    getRef(next?.id || 0).current?.classList.add(styles.back);
+    getRef(prev?.id || 0).current?.classList.add(styles.back);
+    getRef(current?.id || 0).current?.classList.add(styles.back);
     setLeft(0);
     setTimeout(() => {
-      getRef(_next?.id || 0).current?.classList.remove(styles.back);
-      getRef(_prev?.id || 0).current?.classList.remove(styles.back);
-      getRef(_current?.id || 0).current?.classList.remove(styles.back);
+      getRef(next?.id || 0).current?.classList.remove(styles.back);
+      getRef(prev?.id || 0).current?.classList.remove(styles.back);
+      getRef(current?.id || 0).current?.classList.remove(styles.back);
     }, SWIPE_TRANSITION_TIMEOUT);
   };
 
@@ -199,21 +206,21 @@ const Swiper = (props: SwiperProps): React.ReactElement => {
     if (Math.abs(_lastLeft) > width / 3) {
       setLeft(0);
       if (_lastLeft < 0) {
-        if (_next?.children === null) {
+        if (next?.children === null) {
           setBackClass();
           return 1;
         }
-        setPrev(_current);
-        setCurrent(_next);
-        setNext(await getNext(_next?.id || 0));
+        setPrev(current);
+        setCurrent(next);
+        setNext(await getNext(next?.id || 0));
       } else {
-        if (_prev?.children === null) {
+        if (prev?.children === null) {
           setBackClass();
           return 1;
         }
-        setPrev(await getPrev(_prev?.id || 0));
-        setCurrent(_prev);
-        setNext(_current);
+        setPrev(await getPrev(prev?.id || 0));
+        setCurrent(prev);
+        setNext(current);
       }
       setGoClass();
     } else {
@@ -330,10 +337,21 @@ const Swiper = (props: SwiperProps): React.ReactElement => {
       setWindowWidth(_windowWidth);
     }
     // set start cards
-    if (!_current || !_prev || !_next) {
+    if (!current || !prev || !next) {
       setCurrent(defaultCurrent);
       setNext(defaultNext);
       setPrev(defaultPrev);
+    }
+    // run invitation animation
+    if (invitationAnimation && width && !animated) {
+      animated = true;
+      (async (): Promise<void> => {
+        setGoClass();
+        setLeft(-200);
+        await wait(SWIPE_TRANSITION_TIMEOUT);
+        setBackClass();
+        setLeft(_left);
+      })();
     }
     // set is mobile
     if (typeof isMobile === 'undefined') {
@@ -348,14 +366,14 @@ const Swiper = (props: SwiperProps): React.ReactElement => {
       window.removeEventListener('resize', resizeHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [_next]);
+  }, [next]);
 
   return (
     <div className={styles.container} ref={containerRef}>
       {/** absolute position cards */}
       {swipes.map((item) => (
         <div key={item.id}>
-          {item.children && (
+          {item.children && width ? (
             <div
               onTouchMove={onTouchWrapper('onTouchMove')}
               onTouchStart={onTouchWrapper('onTouchStart')}
@@ -377,15 +395,17 @@ const Swiper = (props: SwiperProps): React.ReactElement => {
               {/** Block of content */}
               <div className={clsx(styles.content, className)}>{item.children}</div>
             </div>
+          ) : (
+            ''
           )}
         </div>
       ))}
-      {!isMobile && !prevButtonRef && (
+      {typeof isMobile !== 'undefined' && !isMobile && !prevButtonRef && prev?.children !== null && (
         <div className={clsx(styles.button, styles.button_prev)} ref={_buttonPrevRef}>
           {windowWidth < 3000 ? <NextIcon /> : <NextBigIcon />}
         </div>
       )}
-      {!isMobile && !nextButtonRef && (
+      {typeof isMobile !== 'undefined' && !isMobile && !nextButtonRef && next?.children !== null && (
         <div className={clsx(styles.button, styles.button_next)} ref={_buttonNextRef}>
           {windowWidth < 3000 ? <NextIcon /> : <NextBigIcon />}
         </div>

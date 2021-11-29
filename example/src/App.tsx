@@ -42,6 +42,7 @@ const App = (): React.ReactElement => {
         defaultNext={_getNext(1)}
         getNext={getNext}
         getPrev={getPrevios}
+        invitationAnimation={true}
       />
     </div>
   );
