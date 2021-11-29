@@ -14,7 +14,7 @@ npm install --save @kolserdav/swiper
 
 ```tsx
 import React from 'react';
-import Swiper, { GetSwipeHandler } from 'swiper';
+import { Swiper, GetSwipeHandler } from 'swiper';
 import 'swiper/dist/index.css';
 
 const getNext: GetSwipeHandler = (old) => {
