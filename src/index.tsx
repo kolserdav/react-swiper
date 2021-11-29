@@ -397,7 +397,7 @@ const Swiper = (props: SwiperProps): React.ReactElement => {
               <div className={clsx(styles.content, className)}>{item.children}</div>
             </div>
           ) : (
-            ''
+            <></>
           )}
         </div>
       ))}
