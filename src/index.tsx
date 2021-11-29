@@ -108,12 +108,10 @@ const getSwipes = (__prev: Swipe, __current: Swipe, __next: Swipe): SwipeFull[] 
 /**
  * Get default swipe with random id
  */
-const getDefaultSwipe = (): Swipe => {
-  return {
-    id: Math.ceil(Math.random() * 1000),
-    children: null,
-  };
-};
+const getDefaultSwipe = (): Swipe => ({
+  id: Math.ceil(Math.random() * 1000),
+  children: null,
+});
 
 const refs: {
   [key: number]: RefObject<HTMLDivElement>;
@@ -126,7 +124,7 @@ let animated = false;
 /**
  * Swiper component
  */
-const Swiper = (props: SwiperProps): React.ReactElement => {
+export const Swiper = (props: SwiperProps): React.ReactElement => {
   const {
     defaultCurrent,
     getNext,
@@ -418,5 +416,3 @@ const Swiper = (props: SwiperProps): React.ReactElement => {
 Swiper.defaultProps = {
   className: '',
 };
-
-export default Swiper;

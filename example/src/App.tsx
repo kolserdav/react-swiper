@@ -8,7 +8,7 @@
  * Create date: Mon Nov 29 2021 16:18:08 GMT+0700 (Krasnoyarsk Standard Time)
  ******************************************************************************************/
 import React from 'react';
-import Swiper, { GetSwipeHandler, Swipe } from 'swiper';
+import { Swiper, GetSwipeHandler, Swipe } from 'swiper';
 import 'swiper/dist/index.css';
 
 const getNext: GetSwipeHandler = (old) => {
