@@ -50,6 +50,30 @@ const App = (): React.ReactElement => {
 export default App;
 ```
 
+## Additional properties
+
+```tsx
+/**
+ * Class name for content block
+ */
+className?: string;
+
+/**
+ * Button for swipe to next
+ */
+nextButtonRef?: RefObject<HTMLButtonElement | HTMLDivElement | undefined>;
+
+/**
+ * Button for swipe to previous
+ */
+prevButtonRef?: RefObject<HTMLButtonElement | HTMLDivElement | undefined>;
+
+/**
+ * invitation animation
+ */
+invitationAnimation?: boolean;
+```
+
 ## License
 
 MIT © [kolserdav](https://github.com/kolserdav)
