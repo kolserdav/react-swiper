@@ -77,16 +77,6 @@ interface SwiperProps {
   className?: string;
 
   /**
-   * Button for swipe to next
-   */
-  nextButtonRef?: RefObject<HTMLButtonElement | HTMLDivElement | undefined>;
-
-  /**
-   * Button for swipe to previous
-   */
-  prevButtonRef?: RefObject<HTMLButtonElement | HTMLDivElement | undefined>;
-
-  /**
    * invitation animation
    */
   invitationAnimation?: boolean;
@@ -141,16 +131,7 @@ let oldSwipes: SwipeFull[] = [];
  * Swiper component
  */
 export const Swiper = (props: SwiperProps): React.ReactElement => {
-  const {
-    defaultCurrent,
-    getNext,
-    getPrev,
-    onSwipe,
-    className,
-    prevButtonRef,
-    nextButtonRef,
-    invitationAnimation,
-  } = props;
+  const { defaultCurrent, getNext, getPrev, onSwipe, className, invitationAnimation } = props;
 
   const [current, setCurrent] = useState<Swipe | null>();
   const [prev, setPrev] = useState<Swipe | null>();
@@ -415,8 +396,6 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     const _width = containerRef?.current?.parentElement?.getBoundingClientRect()?.width;
     const _height = containerRef?.current?.parentElement?.getBoundingClientRect()?.height;
     const __left = containerRef?.current?.parentElement?.getBoundingClientRect()?.left;
-    const prevButton = prevButtonRef ? prevButtonRef?.current : _buttonPrevRef.current;
-    const nextButton = nextButtonRef ? nextButtonRef?.current : _buttonNextRef.current;
     const _windowWidth = document.body.clientWidth;
     if (_width && !width && _height && !height) {
       setWidth(_width);
@@ -463,12 +442,8 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
       setIsMobile('ontouchstart' in window || typeof navigator.msMaxTouchPoints !== 'undefined');
     }
     setPreValues(prev, next);
-    prevButton?.addEventListener('click', clickPrevHandler);
-    nextButton?.addEventListener('click', clickNextHandler);
     window.addEventListener('resize', resizeHandler);
     return (): void => {
-      prevButton?.removeEventListener('click', clickPrevHandler);
-      nextButton?.removeEventListener('click', clickNextHandler);
       window.removeEventListener('resize', resizeHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -525,16 +500,16 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
           </React.Fragment>
         </div>
       ))}
-      {typeof isMobile !== 'undefined' && !isMobile && !prevButtonRef && prev?.id && (
+      {typeof isMobile !== 'undefined' && !isMobile && prev?.id && (
         <div className={clsx(styles.button, styles.button_prev)} ref={_buttonPrevRef}>
-          <IconButton>
+          <IconButton onClick={clickPrevHandler}>
             <NavigateNextIcon />
           </IconButton>
         </div>
       )}
-      {typeof isMobile !== 'undefined' && !isMobile && !nextButtonRef && next?.id && (
+      {typeof isMobile !== 'undefined' && !isMobile && next?.id && (
         <div className={clsx(styles.button, styles.button_next)} ref={_buttonNextRef}>
-          <IconButton>
+          <IconButton onClick={clickNextHandler}>
             <NavigateNextIcon />
           </IconButton>
         </div>

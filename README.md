@@ -85,16 +85,6 @@ interface SwiperProps {
   className?: string;
 
   /**
-   * Button for swipe to next
-   */
-  nextButtonRef?: RefObject<HTMLButtonElement | HTMLDivElement | undefined>;
-
-  /**
-   * Button for swipe to previous
-   */
-  prevButtonRef?: RefObject<HTMLButtonElement | HTMLDivElement | undefined>;
-
-  /**
    * invitation animation
    */
   invitationAnimation?: boolean;
