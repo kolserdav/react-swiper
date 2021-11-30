@@ -13,39 +13,46 @@ npm install --save @kolserdav/swiper
 ## Usage
 
 ```tsx
-import React from 'react';
-import { Swiper, GetSwipeHandler } from 'swiper';
+import React, { useState, useEffect } from 'react';
+import { Swiper, GetSwipeHandler, Swipe } from 'swiper';
 import 'swiper/dist/index.css';
 
-const getNext: GetSwipeHandler = (old) => {
+const getNext: GetSwipeHandler = async (old) => {
   const id = old + 1;
   return {
-    id,
-    children: id < 5 ? <h1>Test {id}</h1> : null,
+    id: id < 7 ? id : null,
+    children: id < 7 ? <h1>Test {id}</h1> : <div></div>,
   };
 };
 
-const getPrevious: GetSwipeHandler = (old) => {
+const getPrevios: GetSwipeHandler = async (old) => {
   const id = old - 1;
   return {
-    id,
-    children: id > 0 ? <h1>Test {id}</h1> : null,
+    id: id > 0 ? id : null,
+    children: id > 0 ? <h1>Test {id}</h1> : <div></div>,
   };
-};
-
-/**
- * Typescript syntetic method
- * */
-const _getNext = (id: number): Swipe => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const res: any = getNext(id);
-  return res;
 };
 
 const App = (): React.ReactElement => {
+  const [current, setCurrent] = useState<Swipe>();
+
+  useEffect(() => {
+    if (!current) {
+      (async () => {
+        setCurrent(await getNext(1));
+      })();
+    }
+  }, []);
   return (
     <div>
-      <Swiper defaultCurrent={_getNext(0)} getNext={getNext} getPrev={getPrevious} />
+      {current && (
+        <Swiper
+          defaultCurrent={current}
+          getNext={getNext}
+          getPrev={getPrevios}
+          invitationAnimation={true}
+        />
+      )}
     </div>
   );
 };
@@ -53,28 +60,50 @@ const App = (): React.ReactElement => {
 export default App;
 ```
 
-## Additional properties
+## Properties
 
 ```tsx
-/**
- * Class name for content block
- */
-className?: string;
+interface SwiperProps {
+  /**
+   * Current card content
+   */
+  defaultCurrent: Swipe;
 
-/**
- * Button for swipe to next
- */
-nextButtonRef?: RefObject<HTMLButtonElement | HTMLDivElement | undefined>;
+  /**
+   * Get next card handler
+   */
+  getNext: GetSwipeHandler;
 
-/**
- * Button for swipe to previous
- */
-prevButtonRef?: RefObject<HTMLButtonElement | HTMLDivElement | undefined>;
+  /**
+   * Get previous card handler
+   */
+  getPrev: GetSwipeHandler;
 
-/**
- * invitation animation
- */
-invitationAnimation?: boolean;
+  /**
+   * Class name for content block
+   */
+  className?: string;
+
+  /**
+   * Button for swipe to next
+   */
+  nextButtonRef?: RefObject<HTMLButtonElement | HTMLDivElement | undefined>;
+
+  /**
+   * Button for swipe to previous
+   */
+  prevButtonRef?: RefObject<HTMLButtonElement | HTMLDivElement | undefined>;
+
+  /**
+   * invitation animation
+   */
+  invitationAnimation?: boolean;
+
+  /**
+   * On swipe callback
+   */
+  onSwipe?: (currentId: number) => void;
+}
 ```
 
 ## License

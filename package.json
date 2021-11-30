@@ -1,6 +1,6 @@
 {
   "name": "@kolserdav/swiper",
-  "version": "1.0.10",
+  "version": "2.0.0-beta",
   "description": "Simple and powerfull react swiper component",
   "author": "kolserdav",
   "license": "MIT",
@@ -55,7 +55,7 @@
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react": "^7.27.1",
     "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-standard": "^4.0.1",
     "gh-pages": "^2.2.0",
@@ -73,6 +73,9 @@
     "dist"
   ],
   "dependencies": {
+    "@emotion/react": "^11.7.0",
+    "@mui/icons-material": "^5.2.0",
+    "@mui/material": "^5.2.2",
     "clsx": "^1.1.1",
     "uuid": "^8.3.2"
   },

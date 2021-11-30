@@ -7,19 +7,19 @@
  * Copyright: kolserdav, All rights reserved (c)
  * Create date: Mon Nov 29 2021 16:18:08 GMT+0700 (Krasnoyarsk Standard Time)
  ******************************************************************************************/
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Swiper, GetSwipeHandler, Swipe } from 'swiper';
 import 'swiper/dist/index.css';
 
-const getNext: GetSwipeHandler = (old) => {
+const getNext: GetSwipeHandler = async (old) => {
   const id = old + 1;
   return {
-    id: id < 5 ? id : null,
-    children: id < 5 ? <h1>Test {id}</h1> : <div></div>,
+    id: id < 7 ? id : null,
+    children: id < 7 ? <h1>Test {id}</h1> : <div></div>,
   };
 };
 
-const getPrevios: GetSwipeHandler = (old) => {
+const getPrevios: GetSwipeHandler = async (old) => {
   const id = old - 1;
   return {
     id: id > 0 ? id : null,
@@ -27,21 +27,26 @@ const getPrevios: GetSwipeHandler = (old) => {
   };
 };
 
-const _getNext = (id: number): Swipe => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const res: any = getNext(id);
-  return res;
-};
-
 const App = (): React.ReactElement => {
+  const [current, setCurrent] = useState<Swipe>();
+
+  useEffect(() => {
+    if (!current) {
+      (async () => {
+        setCurrent(await getNext(1));
+      })();
+    }
+  }, []);
   return (
     <div>
-      <Swiper
-        defaultCurrent={_getNext(0)}
-        getNext={getNext}
-        getPrev={getPrevios}
-        invitationAnimation={true}
-      />
+      {current && (
+        <Swiper
+          defaultCurrent={current}
+          getNext={getNext}
+          getPrev={getPrevios}
+          invitationAnimation={true}
+        />
+      )}
     </div>
   );
 };
