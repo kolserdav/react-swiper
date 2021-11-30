@@ -15,6 +15,7 @@ import React, {
   RefObject,
   useEffect,
   TouchEvent,
+  Fragment,
 } from 'react';
 import { IconButton } from '@mui/material';
 import clsx from 'clsx';
@@ -79,11 +80,13 @@ interface SwiperProps {
   /**
    * invitation animation
    */
+  // eslint-disable-next-line react/require-default-props
   invitationAnimation?: boolean;
 
   /**
    * On swipe callback
    */
+  // eslint-disable-next-line react/require-default-props
   onSwipe?: (currentId: number) => void;
 }
 
@@ -112,7 +115,7 @@ const getSwipes = (prev: Swipe, current: Swipe, next: Swipe, swipes: SwipeFull[]
  */
 const getDefaultSwipe = (): Swipe => ({
   id: Math.ceil(Math.random() * 1000),
-  children: <div></div>,
+  children: <div />,
 });
 
 const refs: {
@@ -142,6 +145,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
   const [_left, _setLeft] = useState<number>(0);
   const [left, setLeft] = useState<number>(0);
   const [isMobile, setIsMobile] = useState<boolean>();
+  const [load, setLoad] = useState<boolean>(true);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const _buttonPrevRef = useRef<HTMLDivElement>(null);
@@ -234,6 +238,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
    * Run swipe animation
    */
   const swipe = async (_lastLeft: number): Promise<1 | 0> => {
+    setLoad(true);
     let startTime: number;
     let currentId = 0;
     if (Math.abs(_lastLeft) > width / 3) {
@@ -241,6 +246,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         if (!next?.id) {
           setBackClass();
           setLeft(0);
+          setLoad(false);
           return 1;
         }
         setGoClass();
@@ -266,6 +272,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         if (!prev?.id) {
           setBackClass();
           setLeft(0);
+          setLoad(false);
           return 1;
         }
         setGoClass();
@@ -291,11 +298,13 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     } else {
       setBackClass();
       setLeft(0);
+      setLoad(false);
       return 1;
     }
     if (onSwipe !== undefined) {
       onSwipe(currentId);
     }
+    setLoad(false);
     return 0;
   };
 
@@ -333,9 +342,12 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
   /**
    * On next or previous button click handler
    */
-  const clickHandler = (origin: 'next' | 'prev'): (() => Promise<void>) => {
+  const clickHandler = (origin: 'next' | 'prev'): (() => Promise<1 | 0>) => {
     const isNext = origin === 'next';
-    return async (): Promise<void> => {
+    return async (): Promise<1 | 0> => {
+      if (load) {
+        return 1;
+      }
       const coeff = isNext ? -1 : 1;
       const leftVal = width * coeff;
       if (isNext) {
@@ -343,9 +355,9 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
       } else {
         setBackClass();
       }
-      setLeft(leftVal);
       await wait(SWIPE_TRANSITION_TIMEOUT / 2);
       await swipe(leftVal);
+      return 0;
     };
   };
 
@@ -376,6 +388,9 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     }
   };
 
+  /**
+   * optional animation handler
+   */
   const infitationAnimationHandler = async (shift: number) => {
     if (shift < 0) {
       setGoClass();
@@ -417,11 +432,11 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         setCurrent(defaultCurrent);
         setPrev(_p);
         setNext(_n);
-        setLeft(_left);
         prePrev = await getPrev(_p.id || 0);
         postNext = await getNext(_n.id || 0);
         // setPreValues(_p, _n);
         _defaultCurrent = defaultCurrent;
+        setLoad(false);
       })();
     }
     // run invitation animation
@@ -454,7 +469,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
       {/** absolute position cards */}
       {swipes.map((item) => (
         <div key={item.id}>
-          <React.Fragment>
+          <Fragment>
             {item.id && width && (
               <div
                 onTouchMove={onTouchWrapper('onTouchMove')}
@@ -497,19 +512,19 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
                 </IconButton>
               </div>
             )}
-          </React.Fragment>
+          </Fragment>
         </div>
       ))}
       {typeof isMobile !== 'undefined' && !isMobile && prev?.id && (
         <div className={clsx(styles.button, styles.button_prev)} ref={_buttonPrevRef}>
-          <IconButton onClick={clickPrevHandler}>
+          <IconButton disabled={load} onClick={clickPrevHandler}>
             <NavigateNextIcon />
           </IconButton>
         </div>
       )}
       {typeof isMobile !== 'undefined' && !isMobile && next?.id && (
         <div className={clsx(styles.button, styles.button_next)} ref={_buttonNextRef}>
-          <IconButton onClick={clickNextHandler}>
+          <IconButton disabled={load} onClick={clickNextHandler}>
             <NavigateNextIcon />
           </IconButton>
         </div>

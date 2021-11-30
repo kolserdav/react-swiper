@@ -29,7 +29,6 @@ const getPrevios: GetSwipeHandler = async (old) => {
 
 const App = (): React.ReactElement => {
   const [current, setCurrent] = useState<Swipe>();
-
   useEffect(() => {
     if (!current) {
       (async () => {
