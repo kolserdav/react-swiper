@@ -37,6 +37,7 @@ const App = (): React.ReactElement => {
       })();
     }
   }, []);
+
   return (
     <div>
       {current && (

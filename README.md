@@ -1,6 +1,6 @@
 # swiper
 
-> Simple and powerfull react swiper component
+> Simple and powerfull dynamic react swiper component
 
 [![NPM](https://img.shields.io/npm/v/swiper.svg)](https://www.npmjs.com/package/swiper) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
