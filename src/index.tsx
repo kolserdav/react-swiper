@@ -17,7 +17,7 @@ import React, {
   TouchEvent,
   Fragment,
 } from 'react';
-import { IconButton } from '@mui/material';
+import { IconButton, Paper } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import StopIcon from '@mui/icons-material/StopScreenShare';
@@ -57,13 +57,9 @@ const useStyles = makeStyles(() => ({
     right: 0,
   },
   content: {
-    borderRadius: '2px',
     position: 'relative',
     width: 'calc(100% - 48px)',
     height: 'calc(100% - 48px)',
-    '-webkit-box-shadow': '0px 0px 5px 1px rgba(34, 60, 80, 0.14)',
-    '-moz-box-shadow': '0px 0px 5px 1px rgba(34, 60, 80, 0.14)',
-    boxShadow: '0px 0px 5px 1px rgba(34, 60, 80, 0.14)',
   },
   card: {
     position: 'absolute',
@@ -219,8 +215,6 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
   const [load, setLoad] = useState<boolean>(true);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const _buttonPrevRef = useRef<HTMLDivElement>(null);
-  const _buttonNextRef = useRef<HTMLDivElement>(null);
 
   if (typeof _defaultCurrent === 'undefined') {
     _defaultCurrent = defaultCurrent;
@@ -563,7 +557,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
                 ref={getRef(item.id)}
               >
                 {/** Block of content */}
-                <div className={clsx(content, className)}>{item.children}</div>
+                <Paper className={clsx(content, className)}>{item.children}</Paper>
               </div>
             )}
             {!item.id && (
@@ -589,14 +583,14 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         </div>
       ))}
       {typeof isMobile !== 'undefined' && !isMobile && prev?.id && (
-        <div className={clsx(button, button__prev)} ref={_buttonPrevRef}>
+        <div className={clsx(button, button__prev)}>
           <IconButton disabled={load} onClick={clickPrevHandler}>
             <NavigateNextIcon />
           </IconButton>
         </div>
       )}
       {typeof isMobile !== 'undefined' && !isMobile && next?.id && (
-        <div className={clsx(button, button__next)} ref={_buttonNextRef}>
+        <div className={clsx(button, button__next)}>
           <IconButton disabled={load} onClick={clickNextHandler}>
             <NavigateNextIcon />
           </IconButton>
