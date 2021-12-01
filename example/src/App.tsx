@@ -9,7 +9,6 @@
  ******************************************************************************************/
 import React, { useState, useEffect } from 'react';
 import { Swiper, GetSwipeHandler, Swipe } from 'swiper';
-import 'swiper/dist/index.css';
 
 const getNext: GetSwipeHandler = async (old) => {
   const id = old + 1;
