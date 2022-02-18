@@ -11,18 +11,20 @@ import React, { useState, useEffect } from 'react';
 import { Swiper, GetSwipeHandler, Swipe } from 'swiper';
 
 const getNext: GetSwipeHandler = async (old) => {
-  const id = old + 1;
+  let id = old + 1;
+  id = id <= 7 ? id : 1;
   return {
-    id: id < 7 ? id : null,
-    children: id < 7 ? <h1>Test {id}</h1> : <div></div>,
+    id,
+    children: <h1>Test {id}</h1>,
   };
 };
 
 const getPrevios: GetSwipeHandler = async (old) => {
-  const id = old - 1;
+  let id = old - 1;
+  id = id >= 0 ? id : 7;
   return {
-    id: id > 0 ? id : null,
-    children: id > 0 ? <h1>Test {id}</h1> : <div></div>,
+    id,
+    children: <h1>Test {id}</h1>,
   };
 };
 
@@ -31,7 +33,7 @@ const App = (): React.ReactElement => {
   useEffect(() => {
     if (!current) {
       (async () => {
-        setCurrent(await getNext(1));
+        setCurrent(await getNext(0));
       })();
     }
   }, []);
