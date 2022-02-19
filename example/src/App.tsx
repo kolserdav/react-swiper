@@ -10,9 +10,11 @@
 import React, { useState, useEffect } from 'react';
 import { Swiper, GetSwipeHandler, Swipe } from 'swiper';
 
+const COUNT = 4;
+
 const getNext: GetSwipeHandler = async (old) => {
   let id = old + 1;
-  id = id <= 7 ? id : 1;
+  id = id <= COUNT ? id : 0;
   return {
     id,
     children: <h1>Test {id}</h1>,
@@ -21,7 +23,7 @@ const getNext: GetSwipeHandler = async (old) => {
 
 const getPrevios: GetSwipeHandler = async (old) => {
   let id = old - 1;
-  id = id >= 0 ? id : 7;
+  id = id >= 0 ? id : COUNT;
   return {
     id,
     children: <h1>Test {id}</h1>,

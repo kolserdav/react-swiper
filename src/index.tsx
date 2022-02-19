@@ -147,7 +147,7 @@ interface SwiperProps {
    * On swipe callback
    */
   // eslint-disable-next-line react/require-default-props
-  onSwipe?: (currentId: number) => void;
+  onSwipe?: (currentId: number | null | undefined) => void;
 }
 
 /**
@@ -310,10 +310,10 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
   const swipe = async (_lastLeft: number): Promise<1 | 0> => {
     setLoad(true);
     let startTime: number;
-    let currentId = 0;
+    let currentId: number | null | undefined = 0;
     if (Math.abs(_lastLeft) > width / 3) {
       if (_lastLeft < 0) {
-        if (!next?.id) {
+        if (next?.id === null) {
           setBackClassHandler();
           setLeft(0);
           setLoad(false);
@@ -342,13 +342,13 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         setCurrent(next);
         setNext(postNext);
       } else {
-        if (!prev?.id) {
+        if (prev?.id === null) {
           setBackClassHandler();
           setLeft(0);
           setLoad(false);
           return 1;
         }
-        currentId = prev.id;
+        currentId = prev?.id;
         if (onSwipe !== undefined) {
           onSwipe(currentId);
         }
@@ -552,7 +552,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
       {swipes.map((item) => (
         <div key={item.id}>
           <Fragment>
-            {item.id && width && (
+            {item.id !== null && width && (
               <div
                 onTouchMove={onTouchWrapper('onTouchMove')}
                 onTouchStart={onTouchWrapper('onTouchStart')}
@@ -575,7 +575,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
                 <div className={clsx(content, className)}>{item.children}</div>
               </div>
             )}
-            {!item.id && (
+            {item.id === null && (
               <div
                 style={
                   item.type === 'current'
@@ -597,14 +597,14 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
           </Fragment>
         </div>
       ))}
-      {typeof isMobile !== 'undefined' && !isMobile && prev?.id && (
+      {typeof isMobile !== 'undefined' && !isMobile && prev?.id !== null && (
         <div className={clsx(button, button__prev)}>
           <IconButton disabled={load || isMobile} onClick={clickPrevHandler}>
             <NavigateNextIcon />
           </IconButton>
         </div>
       )}
-      {typeof isMobile !== 'undefined' && !isMobile && next?.id && (
+      {typeof isMobile !== 'undefined' && !isMobile && next?.id !== null && (
         <div className={clsx(button, button__next)}>
           <IconButton disabled={load || isMobile} onClick={clickNextHandler}>
             <NavigateNextIcon />
