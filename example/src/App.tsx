@@ -48,6 +48,7 @@ const App = (): React.ReactElement => {
           getNext={getNext}
           getPrev={getPrevios}
           invitationAnimation={true}
+          durationAnimation={1000}
         />
       )}
     </div>

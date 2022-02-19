@@ -1,6 +1,6 @@
 {
   "name": "@kolserdav/swiper",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "description": "Simple and powerfull react swiper component",
   "author": "kolserdav",
   "license": "MIT",
@@ -31,7 +31,7 @@
     "deploy": "fhead && gh-pages -d example/build"
   },
   "peerDependencies": {
-    "react": "^16.0.0"
+    "react": "^17.0.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",

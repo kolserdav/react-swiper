@@ -148,6 +148,11 @@ interface SwiperProps {
    */
   // eslint-disable-next-line react/require-default-props
   onSwipe?: (currentId: number | null | undefined) => void;
+
+  /**
+   * Auto slide if provieded
+   */
+  durationAnimation?: number;
 }
 
 /**
@@ -194,7 +199,15 @@ let oldSwipes: SwipeFull[] = [];
  * Swiper component
  */
 export const Swiper = (props: SwiperProps): React.ReactElement => {
-  const { defaultCurrent, getNext, getPrev, onSwipe, className, invitationAnimation } = props;
+  const {
+    defaultCurrent,
+    getNext,
+    getPrev,
+    onSwipe,
+    className,
+    invitationAnimation,
+    durationAnimation,
+  } = props;
   const {
     go,
     card,
@@ -480,6 +493,13 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
   };
 
   useEffect(() => {
+    let clearAnimate: NodeJS.Timeout;
+    if (durationAnimation) {
+      clearAnimate = setInterval(() => {
+        clickNextHandler();
+      }, durationAnimation);
+    }
+
     const _width = containerRef?.current?.parentElement?.getBoundingClientRect()?.width;
     const _height = containerRef?.current?.parentElement?.getBoundingClientRect()?.height;
     const __left = containerRef?.current?.parentElement?.getBoundingClientRect()?.left;
@@ -539,6 +559,9 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     setPreValues(prev, next);
     window.addEventListener('resize', resizeHandler);
     return (): void => {
+      if (clearAnimate) {
+        clearInterval(clearAnimate);
+      }
       window.removeEventListener('resize', resizeHandler);
       buttonNext?.removeEventListener('click', clickNextHandler);
       buttonClose?.removeEventListener('click', clickNextHandler);
