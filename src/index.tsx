@@ -553,6 +553,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     // set is mobile
     if (typeof isMobile === 'undefined') {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       setIsMobile('ontouchstart' in window || typeof navigator.msMaxTouchPoints !== 'undefined');
     }

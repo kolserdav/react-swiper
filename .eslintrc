@@ -26,11 +26,10 @@
     "react-hooks",
     "prettier",
     "eslint-plugin-prettier",
-    "import",
-    "eslint:recommended",
-    "plugin:react/recommended"
+    "import"
   ],
   "rules": {
+    "@typescript-eslint/camelcase": 0,
     "react-hooks/rules-of-hooks": 2,
     "react-hooks/exhaustive-deps": 1,
     "react/function-component-definition": [

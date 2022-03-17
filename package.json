@@ -1,10 +1,10 @@
 {
   "name": "@kolserdav/swiper",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Simple and powerfull react swiper component",
   "author": "kolserdav",
   "license": "MIT",
-  "repository": "https://github.com/kolserdav/swiper",
+  "repository": "https://github.com/kolserdav/react-swiper",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.tsx",
@@ -73,8 +73,8 @@
     "dist"
   ],
   "dependencies": {
-    "@emotion/react": "^11.7.0",
-    "@emotion/styled": "^11.6.0",
+    "@emotion/react": "^11.8.1",
+    "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.2.0",
     "@mui/material": "^5.2.2",
     "@mui/styles": "^5.2.2",
@@ -83,7 +83,7 @@
   },
   "fhead": {
     "root": ".",
-    "repository": "https://github.com/kolserdav/swiper.git",
+    "repository": "https://github.com/kolserdav/react-swiper.git",
     "patterns": [
       ".ts",
       ".tsx"

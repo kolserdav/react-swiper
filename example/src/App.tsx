@@ -35,7 +35,7 @@ const App = (): React.ReactElement => {
   useEffect(() => {
     if (!current) {
       (async () => {
-        setCurrent(await getNext(0));
+        setCurrent(await getNext(-1));
       })();
     }
   }, []);
@@ -48,7 +48,6 @@ const App = (): React.ReactElement => {
           getNext={getNext}
           getPrev={getPrevios}
           invitationAnimation={true}
-          durationAnimation={1000}
         />
       )}
     </div>
