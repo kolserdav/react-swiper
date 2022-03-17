@@ -7,7 +7,7 @@
  * Copyright: kolserdav, All rights reserved (c)
  * Create date: Mon Nov 29 2021 16:18:08 GMT+0700 (Krasnoyarsk Standard Time)
  ******************************************************************************************/
- import React, {
+import React, {
   useMemo,
   useState,
   useRef,
@@ -18,12 +18,12 @@
   Fragment,
 } from 'react';
 import { IconButton } from '@mui/material';
-import { makeStyles, DefaultTheme as Theme } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import StopIcon from '@mui/icons-material/StopScreenShare';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
   go: {
     transition: 'left 0.4s ease-out 0s',
   },
@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: 'calc(100% - 48px)',
     maxHeight: 'calc(100% - 48px)',
     minHeight: '20%',
-    background: theme.palette.background.paper,
+    background: '#ffff',
   },
   card: {
     position: 'absolute',
@@ -175,7 +175,7 @@ const getSwipes = (prev: Swipe, current: Swipe, next: Swipe, swipes: SwipeFull[]
  */
 const getDefaultSwipe = (): Swipe => ({
   id: Math.ceil(Math.random() * 1000),
-  children: <></>,
+  children: <div />,
 });
 
 const refs: {
@@ -183,7 +183,6 @@ const refs: {
 } = {};
 
 let startClientX: number;
-let lastLeft: number;
 let animated = false;
 let prePrev: Swipe | null = null;
 let postNext: Swipe | null = null;
@@ -388,6 +387,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     const { touches } = e;
     const clientX = touches[0]?.clientX;
     startClientX = startClientX || 0;
+    let lastLeft = 0;
     switch (name) {
       case 'onTouchStart':
         startClientX = clientX;
@@ -395,10 +395,10 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         break;
       case 'onTouchMove':
         lastLeft = _left - (startClientX - clientX);
-        //setLeft(lastLeft);
+        setLeft(lastLeft);
         break;
       case 'onTouchEnd':
-        //await swipe(lastLeft);
+        await swipe(lastLeft);
         break;
       default:
     }
@@ -532,7 +532,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     }
     // set is mobile
     if (typeof isMobile === 'undefined') {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       setIsMobile('ontouchstart' in window || typeof navigator.msMaxTouchPoints !== 'undefined');
     }
