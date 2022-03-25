@@ -15,6 +15,7 @@ npm install --save @kolserdav/swiper
 ```tsx
 import React, { useState, useEffect } from 'react';
 import { Swiper, GetSwipeHandler, Swipe } from '@kolserdav/swiper';
+import 'swiper/dist/index.css'; // From version 3.0.0 is required
 
 const COUNT = 4;
 
@@ -62,7 +63,6 @@ const App = (): React.ReactElement => {
 };
 
 export default App;
-
 ```
 
 ## Properties

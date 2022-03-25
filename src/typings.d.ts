@@ -22,5 +22,9 @@ declare module '*.svg' {
   const svgUrl: string;
   const svgComponent: SvgrComponent;
   export default svgUrl;
-  export { svgComponent as ReactComponent }
+  export { svgComponent as ReactComponent };
+}
+declare module '*.module.css' {
+  const classes: { [key: string]: string };
+  export default classes;
 }
