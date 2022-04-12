@@ -14,35 +14,39 @@ npm install --save @kolserdav/swiper
 
 ```tsx
 import React, { useState, useEffect } from 'react';
-import { Swiper, GetSwipeHandler, Swipe } from 'swiper';
-import 'swiper/dist/index.css';
+import { Swiper, GetSwipeHandler, Swipe } from '@kolserdav/swiper';
+import '@kolserdav/swiper/dist/index.css'; // From version 3.0.0 is required
+
+const COUNT = 4;
 
 const getNext: GetSwipeHandler = async (old) => {
-  const id = old + 1;
+  let id = old + 1;
+  id = id <= COUNT ? id : 0;
   return {
-    id: id < 7 ? id : null,
-    children: id < 7 ? <h1>Test {id}</h1> : <div></div>,
+    id,
+    children: <h1>Test {id}</h1>,
   };
 };
 
 const getPrevios: GetSwipeHandler = async (old) => {
-  const id = old - 1;
+  let id = old - 1;
+  id = id >= 0 ? id : COUNT;
   return {
-    id: id > 0 ? id : null,
-    children: id > 0 ? <h1>Test {id}</h1> : <div></div>,
+    id,
+    children: <h1>Test {id}</h1>,
   };
 };
 
 const App = (): React.ReactElement => {
   const [current, setCurrent] = useState<Swipe>();
-
   useEffect(() => {
     if (!current) {
       (async () => {
-        setCurrent(await getNext(1));
+        setCurrent(await getNext(0));
       })();
     }
   }, []);
+
   return (
     <div>
       {current && (
@@ -51,6 +55,7 @@ const App = (): React.ReactElement => {
           getNext={getNext}
           getPrev={getPrevios}
           invitationAnimation={true}
+          durationAnimation={1000}
         />
       )}
     </div>

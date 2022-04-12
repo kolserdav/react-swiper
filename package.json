@@ -1,10 +1,10 @@
 {
   "name": "@kolserdav/swiper",
-  "version": "2.2.0-alfa",
+  "version": "3.0.3",
   "description": "Simple and powerfull react swiper component",
   "author": "kolserdav",
   "license": "MIT",
-  "repository": "https://github.com/kolserdav/swiper",
+  "repository": "https://github.com/kolserdav/react-swiper",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.tsx",
@@ -31,7 +31,7 @@
     "deploy": "fhead && gh-pages -d example/build"
   },
   "peerDependencies": {
-    "react": "^16.0.0"
+    "react": "^17.0.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -41,13 +41,12 @@
     "@types/node": "^12.12.38",
     "@types/react": "^16.9.27",
     "@types/react-dom": "^16.9.7",
-    "@types/uuid": "^8.3.3",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
+    "microbundle-crl": "^0.13.10",
     "babel-eslint": "^10.0.3",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
-    "eslint-config-next": "12.0.4",
     "eslint-config-prettier": "^6.7.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-config-standard-react": "^9.2.0",
@@ -56,17 +55,13 @@
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.27.1",
-    "eslint-plugin-react-hooks": "^4.3.0",
+    "eslint-plugin-react": "^7.17.0",
     "eslint-plugin-standard": "^4.0.1",
     "gh-pages": "^2.2.0",
-    "microbundle-crl": "^0.13.10",
-    "node-sass": "^6.0.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-hooks": "^1.0.1",
     "react-scripts": "^3.4.1",
     "typescript": "^3.7.5"
   },
@@ -74,17 +69,12 @@
     "dist"
   ],
   "dependencies": {
-    "@emotion/react": "^11.8.1",
-    "@emotion/styled": "^11.8.1",
-    "@mui/icons-material": "^5.2.0",
-    "@mui/material": "^5.2.2",
-    "@mui/styles": "^5.2.2",
     "clsx": "^1.1.1",
     "uuid": "^8.3.2"
   },
   "fhead": {
     "root": ".",
-    "repository": "https://github.com/kolserdav/swiper.git",
+    "repository": "https://github.com/kolserdav/react-swiper.git",
     "patterns": [
       ".ts",
       ".tsx"

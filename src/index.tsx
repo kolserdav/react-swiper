@@ -17,69 +17,8 @@ import React, {
   TouchEvent,
   Fragment,
 } from 'react';
-import { IconButton } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
-import StopIcon from '@mui/icons-material/StopScreenShare';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-
-const useStyles = makeStyles(() => ({
-  go: {
-    transition: 'left 0.4s ease-out 0s',
-  },
-  back: { transition: 'left 0.4s ease-in 0s' },
-  container: {
-    position: 'relative',
-    overflow: 'hidden',
-    minWidth: '320px',
-    width: '100%',
-    height: '100%',
-    minHeight: 'calc(100vh - 2rem)',
-    maxWidth: '100vw',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBlockStart: '2rem',
-  },
-  button: {
-    cursor: 'pointer',
-    position: 'absolute',
-    width: 'auto',
-    height: 'auto',
-    display: 'flex',
-    alignItems: 'center',
-    zIndex: '12',
-  },
-  button__prev: {
-    left: 0,
-    transform: 'rotate(180deg)',
-  },
-  button__next: {
-    right: 0,
-  },
-  content: {
-    position: 'relative',
-    width: 'calc(100% - 48px)',
-    maxHeight: 'calc(100% - 48px)',
-    minHeight: '20%',
-    background: '#ffff',
-  },
-  card: {
-    position: 'absolute',
-    maxWidth: 'inherit',
-    top: 0,
-    left: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  card__prev: {
-    left: '-100%',
-  },
-  card__next: {
-    left: '100%',
-  },
-}));
+import s from './styles.module.css';
 
 /**
  * Time to miliseconds of change animation by card left value
@@ -147,7 +86,12 @@ interface SwiperProps {
    * On swipe callback
    */
   // eslint-disable-next-line react/require-default-props
-  onSwipe?: (currentId: number) => void;
+  onSwipe?: (currentId: number | null | undefined) => void;
+
+  /**
+   * Auto slide if provieded
+   */
+  durationAnimation?: number;
 }
 
 /**
@@ -183,6 +127,7 @@ const refs: {
 } = {};
 
 let startClientX: number;
+let lastLeft: number;
 let animated = false;
 let prePrev: Swipe | null = null;
 let postNext: Swipe | null = null;
@@ -193,19 +138,15 @@ let oldSwipes: SwipeFull[] = [];
  * Swiper component
  */
 export const Swiper = (props: SwiperProps): React.ReactElement => {
-  const { defaultCurrent, getNext, getPrev, onSwipe, className, invitationAnimation } = props;
   const {
-    go,
-    card,
-    card__next,
-    card__prev,
-    button,
-    button__next,
-    button__prev,
-    back,
-    container,
-    content,
-  } = useStyles();
+    defaultCurrent,
+    getNext,
+    getPrev,
+    onSwipe,
+    className,
+    invitationAnimation,
+    durationAnimation,
+  } = props;
 
   const [current, setCurrent] = useState<Swipe | null>();
   const [prev, setPrev] = useState<Swipe | null>();
@@ -252,13 +193,13 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
    * Set to cards classes for in animation
    */
   const setGoClassHandler = (): void => {
-    getRef(next?.id || 0).current?.classList.add(go);
-    getRef(prev?.id || 0).current?.classList.add(go);
-    getRef(current?.id || 0).current?.classList.add(go);
+    getRef(next?.id || 0).current?.classList.add(s.go);
+    getRef(prev?.id || 0).current?.classList.add(s.go);
+    getRef(current?.id || 0).current?.classList.add(s.go);
     setTimeout(() => {
-      getRef(next?.id || 0).current?.classList.remove(go);
-      getRef(prev?.id || 0).current?.classList.remove(go);
-      getRef(current?.id || 0).current?.classList.remove(go);
+      getRef(next?.id || 0).current?.classList.remove(s.go);
+      getRef(prev?.id || 0).current?.classList.remove(s.go);
+      getRef(current?.id || 0).current?.classList.remove(s.go);
     }, SWIPE_TRANSITION_TIMEOUT);
   };
 
@@ -266,13 +207,13 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
    * Set to cards classes for out animation
    */
   const setBackClassHandler = (): void => {
-    getRef(next?.id || 0).current?.classList.add(back);
-    getRef(prev?.id || 0).current?.classList.add(back);
-    getRef(current?.id || 0).current?.classList.add(back);
+    getRef(next?.id || 0).current?.classList.add(s.back);
+    getRef(prev?.id || 0).current?.classList.add(s.back);
+    getRef(current?.id || 0).current?.classList.add(s.back);
     setTimeout(() => {
-      getRef(next?.id || 0).current?.classList.remove(back);
-      getRef(prev?.id || 0).current?.classList.remove(back);
-      getRef(current?.id || 0).current?.classList.remove(back);
+      getRef(next?.id || 0).current?.classList.remove(s.back);
+      getRef(prev?.id || 0).current?.classList.remove(s.back);
+      getRef(current?.id || 0).current?.classList.remove(s.back);
     }, SWIPE_TRANSITION_TIMEOUT);
   };
 
@@ -309,10 +250,10 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
   const swipe = async (_lastLeft: number): Promise<1 | 0> => {
     setLoad(true);
     let startTime: number;
-    let currentId = 0;
+    let currentId: number | null | undefined = 0;
     if (Math.abs(_lastLeft) > width / 3) {
       if (_lastLeft < 0) {
-        if (!next?.id) {
+        if (next?.id === null) {
           setBackClassHandler();
           setLeft(0);
           setLoad(false);
@@ -341,13 +282,13 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         setCurrent(next);
         setNext(postNext);
       } else {
-        if (!prev?.id) {
+        if (prev?.id === null) {
           setBackClassHandler();
           setLeft(0);
           setLoad(false);
           return 1;
         }
-        currentId = prev.id;
+        currentId = prev?.id;
         if (onSwipe !== undefined) {
           onSwipe(currentId);
         }
@@ -387,7 +328,6 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     const { touches } = e;
     const clientX = touches[0]?.clientX;
     startClientX = startClientX || 0;
-    let lastLeft = 0;
     switch (name) {
       case 'onTouchStart':
         startClientX = clientX;
@@ -480,6 +420,13 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
   };
 
   useEffect(() => {
+    let clearAnimate: NodeJS.Timeout;
+    if (durationAnimation) {
+      clearAnimate = setInterval(() => {
+        clickNextHandler();
+      }, durationAnimation);
+    }
+
     const _width = containerRef?.current?.parentElement?.getBoundingClientRect()?.width;
     const _height = containerRef?.current?.parentElement?.getBoundingClientRect()?.height;
     const __left = containerRef?.current?.parentElement?.getBoundingClientRect()?.left;
@@ -532,83 +479,120 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     }
     // set is mobile
     if (typeof isMobile === 'undefined') {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
-      setIsMobile('ontouchstart' in window || typeof navigator.msMaxTouchPoints !== 'undefined');
+      setIsMobile('ontouchstart' in window || typeof navigator?.msMaxTouchPoints !== 'undefined');
     }
     setPreValues(prev, next);
     window.addEventListener('resize', resizeHandler);
     return (): void => {
+      if (clearAnimate) {
+        clearInterval(clearAnimate);
+      }
       window.removeEventListener('resize', resizeHandler);
       buttonNext?.removeEventListener('click', clickNextHandler);
       buttonClose?.removeEventListener('click', clickNextHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [next, defaultCurrent]);
-
   return (
-    <div className={container} ref={containerRef}>
+    <div className={s.container} ref={containerRef}>
       {/** absolute position cards */}
       {swipes.map((item) => (
-        <div key={item.id}>
-          <Fragment>
-            {item.id && width && (
-              <div
-                onTouchMove={onTouchWrapper('onTouchMove')}
-                onTouchStart={onTouchWrapper('onTouchStart')}
-                onTouchEnd={onTouchWrapper('onTouchEnd')}
-                id={item.id?.toString()}
-                style={
-                  item.type === 'current'
-                    ? { width, height, left }
-                    : item.type === 'prev'
-                    ? { width, height, left: left - window.innerWidth }
-                    : { width, height, left: left + window.innerWidth }
-                }
-                className={clsx(
-                  card,
-                  item.type === 'prev' ? card__prev : item.type === 'next' ? card__next : ''
-                )}
-                ref={getRef(item.id)}
-              >
-                {/** Block of content */}
-                <div className={clsx(content, className)}>{item.children}</div>
-              </div>
-            )}
-            {!item.id && (
-              <div
-                style={
-                  item.type === 'current'
-                    ? { width, height, left }
-                    : item.type === 'prev'
-                    ? { width, height, left: left - windowWidth }
-                    : { width, height, left: left + windowWidth }
-                }
-                className={clsx(
-                  card,
-                  item.type === 'prev' ? card__prev : item.type === 'next' ? card__next : ''
-                )}
-              >
-                <IconButton disabled={true}>
-                  <StopIcon />
-                </IconButton>
-              </div>
-            )}
-          </Fragment>
-        </div>
+        <Fragment key={item.id}>
+          {item.id !== null && item.children !== null && width && (
+            <div
+              onTouchMove={onTouchWrapper('onTouchMove')}
+              onTouchStart={onTouchWrapper('onTouchStart')}
+              onTouchEnd={onTouchWrapper('onTouchEnd')}
+              id={item.id?.toString()}
+              style={
+                item.type === 'current'
+                  ? { width, height, left }
+                  : item.type === 'prev'
+                  ? { width, height, left: left - window.innerWidth }
+                  : { width, height, left: left + window.innerWidth }
+              }
+              className={clsx(
+                s.card,
+                item.type === 'prev' ? s.prev : item.type === 'next' ? s.next : ''
+              )}
+              ref={getRef(item.id)}
+            >
+              {/** Block of content */}
+              <div className={clsx(s.content, className)}>{item.children}</div>
+            </div>
+          )}
+          {item.id === null && (
+            <div
+              style={
+                item.type === 'current'
+                  ? { width, height, left }
+                  : item.type === 'prev'
+                  ? { width, height, left: left - windowWidth }
+                  : { width, height, left: left + windowWidth }
+              }
+              className={clsx(
+                s.card,
+                item.type === 'prev' ? s.prev : item.type === 'next' ? s.next : ''
+              )}
+            >
+              <button disabled={true}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5z" />
+                </svg>
+              </button>
+            </div>
+          )}
+        </Fragment>
       ))}
-      {typeof isMobile !== 'undefined' && !isMobile && prev?.id && (
-        <div className={clsx(button, button__prev)}>
-          <IconButton disabled={load || isMobile} onClick={clickPrevHandler}>
-            <NavigateNextIcon />
-          </IconButton>
+      {typeof isMobile !== 'undefined' && !isMobile && prev?.id !== null && (
+        <div className={clsx(s.button, s.button__prev)}>
+          <button
+            className={s.icon__button}
+            type="button"
+            disabled={load || isMobile}
+            onClick={clickPrevHandler}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 0 24 24"
+              width="24px"
+              fill="#000000"
+            >
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path d="M10.02 6L8.61 7.41 13.19 12l-4.58 4.59L10.02 18l6-6-6-6z" />
+            </svg>
+          </button>
         </div>
       )}
-      {typeof isMobile !== 'undefined' && !isMobile && next?.id && (
-        <div className={clsx(button, button__next)}>
-          <IconButton disabled={load || isMobile} onClick={clickNextHandler}>
-            <NavigateNextIcon />
-          </IconButton>
+      {typeof isMobile !== 'undefined' && !isMobile && next?.id !== null && (
+        <div className={clsx(s.button, s.button__next)}>
+          <button
+            className={s.icon__button}
+            type="button"
+            disabled={load || isMobile}
+            onClick={clickNextHandler}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 0 24 24"
+              width="24px"
+              fill="#000000"
+            >
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path d="M10.02 6L8.61 7.41 13.19 12l-4.58 4.59L10.02 18l6-6-6-6z" />
+            </svg>
+          </button>
         </div>
       )}
     </div>
