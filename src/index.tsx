@@ -419,6 +419,34 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     await wait(SWIPE_TRANSITION_TIMEOUT);
   };
 
+  /**
+   * Initial start cards
+   */
+  const setStartCards = async (): Promise<void> => {
+    const _n = await getNext(defaultCurrent.id || 0);
+    const _p = await getPrev(defaultCurrent.id || 0);
+    setCurrent(defaultCurrent);
+    setPrev(_p);
+    setNext(_n);
+    prePrev = await getPrev(_p.id || 0);
+    postNext = await getNext(_n.id || 0);
+    // setPreValues(_p, _n);
+    _defaultCurrent = defaultCurrent;
+    setLoad(false);
+  };
+
+  /**
+   * Invitation animation
+   */
+  const startInvitationAnimation = async (prev: Swipe, next: Swipe): Promise<void> => {
+    if (prev.id) {
+      await infitationAnimationHandler(windowWidth / 5.5);
+    }
+    if (next.id) {
+      await infitationAnimationHandler((windowWidth / 5.5) * -1);
+    }
+  };
+
   useEffect(() => {
     let clearAnimate: NodeJS.Timeout;
     if (durationAnimation) {
@@ -426,7 +454,6 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         clickNextHandler();
       }, durationAnimation);
     }
-
     const _width = containerRef?.current?.parentElement?.getBoundingClientRect()?.width;
     const _height = containerRef?.current?.parentElement?.getBoundingClientRect()?.height;
     const __left = containerRef?.current?.parentElement?.getBoundingClientRect()?.left;
@@ -450,31 +477,13 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     }
     // set start cards
     if (!current || !prev || !next || _defaultCurrent !== defaultCurrent) {
-      (async (): Promise<void> => {
-        const _n = await getNext(defaultCurrent.id || 0);
-        const _p = await getPrev(defaultCurrent.id || 0);
-        setCurrent(defaultCurrent);
-        setPrev(_p);
-        setNext(_n);
-        prePrev = await getPrev(_p.id || 0);
-        postNext = await getNext(_n.id || 0);
-        // setPreValues(_p, _n);
-        _defaultCurrent = defaultCurrent;
-        setLoad(false);
-      })();
+      setStartCards();
     }
     // run invitation animation
     if (invitationAnimation && width && !animated) {
       if (prev && next) {
         animated = true;
-        (async (): Promise<void> => {
-          if (prev.id) {
-            await infitationAnimationHandler(windowWidth / 5.5);
-          }
-          if (next.id) {
-            await infitationAnimationHandler((windowWidth / 5.5) * -1);
-          }
-        })();
+        startInvitationAnimation(prev, next);
       }
     }
     // set is mobile
