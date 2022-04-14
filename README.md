@@ -98,6 +98,16 @@ interface SwiperProps {
    * On swipe callback
    */
   onSwipe?: (currentId: number) => void;
+
+   /**
+   * Auto slide if provieded
+   */
+  durationAnimation?: number;
+
+  /**
+   * Blocked swipe event
+   */
+  blockSwipe?: boolean;
 }
 ```
 

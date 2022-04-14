@@ -39,12 +39,13 @@ const App = (): React.ReactElement => {
         setCurrent(await getNext(-1));
       })();
     }
-  }, []);
+  }, [current]);
 
   return (
     <div className='container'>
       {current && (
         <Swiper
+          blockSwipe={false}
           defaultCurrent={current}
           getNext={getNext}
           getPrev={getPrevios}

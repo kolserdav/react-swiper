@@ -92,6 +92,11 @@ interface SwiperProps {
    * Auto slide if provieded
    */
   durationAnimation?: number;
+
+  /**
+   * Blocked swipe event
+   */
+  blockSwipe?: boolean;
 }
 
 /**
@@ -146,6 +151,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     className,
     invitationAnimation,
     durationAnimation,
+    blockSwipe,
   } = props;
 
   const [current, setCurrent] = useState<Swipe | null>();
@@ -334,11 +340,15 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         lastLeft = _left;
         break;
       case 'onTouchMove':
-        lastLeft = _left - (startClientX - clientX);
-        setLeft(lastLeft);
+        if (!blockSwipe) {
+          lastLeft = _left - (startClientX - clientX);
+          setLeft(lastLeft);
+        }
         break;
       case 'onTouchEnd':
-        await swipe(lastLeft);
+        if (!blockSwipe) {
+          await swipe(lastLeft);
+        }
         break;
       default:
     }
