@@ -132,6 +132,7 @@ const refs: {
 } = {};
 
 let startClientX: number;
+let startClientY: number;
 let lastLeft: number;
 let animated = false;
 let prePrev: Swipe | null = null;
@@ -333,16 +334,25 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
   const onTouchHandler = async (name: TouchName, e: TouchEvent): Promise<void> => {
     const { touches } = e;
     const clientX = touches[0]?.clientX;
+    const clientY = touches[0]?.clientY;
     startClientX = startClientX || 0;
+    startClientY = startClientY || 0;
+    let absX = 0;
+    let absY = 0;
     switch (name) {
       case 'onTouchStart':
         startClientX = clientX;
+        startClientY = clientY;
         lastLeft = _left;
         break;
       case 'onTouchMove':
         if (!blockSwipe) {
-          lastLeft = _left - (startClientX - clientX);
-          setLeft(lastLeft);
+          absY = Math.abs(startClientY - clientY);
+          absX = Math.abs(startClientX - clientX);
+          if (absX > absY) {
+            lastLeft = _left - (startClientX - clientX);
+            setLeft(lastLeft);
+          }
         }
         break;
       case 'onTouchEnd':
