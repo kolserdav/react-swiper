@@ -30,6 +30,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 .prev {
   left: -100%;
@@ -113,4 +114,26 @@
 }
 .icon__button:active {
   background-color: rgba(0, 0, 0, 0.007);
+}
+
+.dots {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  bottom: 0;
+}
+
+.dot {
+  cursor: pointer;
+  position: relative;
+  width: 8px;
+  height: 8px;
+  margin: 2px;
+  border: 1px solid gray;
+  border-radius: 50%;
+}
+
+.dot.active {
+  cursor: default;
+  background-color: gray;
 }

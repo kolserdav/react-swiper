@@ -108,6 +108,14 @@ interface SwiperProps {
    * Blocked swipe event
    */
   blockSwipe?: boolean;
+
+  /**
+   * Show dots
+   */
+  dots?: {
+    list: number[];
+    active: number;
+  };
 }
 ```
 

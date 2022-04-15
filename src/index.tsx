@@ -16,6 +16,7 @@ import React, {
   useEffect,
   TouchEvent,
   Fragment,
+  MouseEventHandler,
 } from 'react';
 import clsx from 'clsx';
 import s from './styles.module.css';
@@ -97,6 +98,14 @@ interface SwiperProps {
    * Blocked swipe event
    */
   blockSwipe?: boolean;
+
+  /**
+   * Show dots
+   */
+  dots?: {
+    list: number[];
+    active: number;
+  };
 }
 
 /**
@@ -153,6 +162,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     invitationAnimation,
     durationAnimation,
     blockSwipe,
+    dots,
   } = props;
 
   const [current, setCurrent] = useState<Swipe | null>();
@@ -467,6 +477,35 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     }
   };
 
+  /**
+   * Handler on click by dot
+   */
+  const clickDotHandler: MouseEventHandler<HTMLDivElement> = async (e: any) => {
+    const { target } = e;
+    const tabindex = target?.getAttribute('tabindex');
+    const active = parseInt(tabindex, 10);
+    const currId = current?.id || 0;
+    if (currId < active) {
+      const next = await getNext(active - 1);
+      postNext = await getNext(active);
+      setNext(next);
+      await swipe(-1000);
+      const prev = await getPrev(next?.id || 0);
+      prePrev = await getPrev((next?.id || 0) - 1);
+      setPrev(prev);
+      setCurrent(next);
+    } else {
+      const prev = await getPrev(active + 1);
+      prePrev = await getPrev(active);
+      setPrev(prev);
+      await swipe(1000);
+      const next = await getNext(prev?.id || 0);
+      postNext = await getNext((prev?.id || 0) + 1);
+      setNext(next);
+      setCurrent(prev);
+    }
+  };
+
   useEffect(() => {
     let clearAnimate: NodeJS.Timeout;
     if (durationAnimation) {
@@ -621,6 +660,19 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
               <path d="M10.02 6L8.61 7.41 13.19 12l-4.58 4.59L10.02 18l6-6-6-6z" />
             </svg>
           </button>
+        </div>
+      )}
+      {dots && (
+        <div className={s.dots}>
+          {dots.list.map((item) => (
+            <div
+              role="button"
+              onClick={clickDotHandler}
+              tabIndex={item}
+              key={item}
+              className={clsx(s.dot, current?.id === item ? s.active : '')}
+            />
+          ))}
         </div>
       )}
     </div>
