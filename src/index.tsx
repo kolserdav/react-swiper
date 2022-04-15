@@ -264,7 +264,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
   /**
    * Run swipe animation
    */
-  const swipe = async (_lastLeft: number): Promise<1 | 0> => {
+  const swipe = async (_lastLeft: number, _next?: Swipe, _prev?: Swipe): Promise<1 | 0> => {
     setLoad(true);
     let startTime: number;
     let currentId: number | null | undefined = 0;
@@ -276,7 +276,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
           setLoad(false);
           return 1;
         }
-        currentId = next?.id;
+        currentId = _next?.id || next?.id;
         if (onSwipe !== undefined) {
           onSwipe(currentId);
         }
@@ -296,7 +296,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         await wait(SWIPE_TRANSITION_TIMEOUT - (new Date().getTime() - startTime));
         setLeft(0);
         setPrev(current);
-        setCurrent(next);
+        setCurrent(_next || next);
         setNext(postNext);
       } else {
         if (prev?.id === null) {
@@ -305,7 +305,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
           setLoad(false);
           return 1;
         }
-        currentId = prev?.id;
+        currentId = _prev?.id || prev?.id;
         if (onSwipe !== undefined) {
           onSwipe(currentId);
         }
@@ -325,7 +325,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         await wait(SWIPE_TRANSITION_TIMEOUT - (new Date().getTime() - startTime));
         setLeft(0);
         setPrev(prePrev);
-        setCurrent(prev);
+        setCurrent(_prev || prev);
         setNext(current);
       }
     } else {
@@ -489,20 +489,18 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
       const next = await getNext(active - 1);
       postNext = await getNext(active);
       setNext(next);
-      await swipe(-1000);
       const prev = await getPrev(next?.id || 0);
       prePrev = await getPrev((next?.id || 0) - 1);
+      await swipe(-1000, next, prev);
       setPrev(prev);
-      setCurrent(next);
     } else {
       const prev = await getPrev(active + 1);
       prePrev = await getPrev(active);
       setPrev(prev);
-      await swipe(1000);
       const next = await getNext(prev?.id || 0);
       postNext = await getNext((prev?.id || 0) + 1);
+      await swipe(1000, next, prev);
       setNext(next);
-      setCurrent(prev);
     }
   };
 
