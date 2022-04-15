@@ -14,8 +14,8 @@ import 'swiper/dist/index.css';
 const COUNT = 4;
 
 const getNext: GetSwipeHandler = async (old) => {
-  let id = old + 1;
-  id = id <= COUNT ? id : 0;
+  let id: any = old + 1;
+  id = id <= COUNT ? id : null;
   return {
     id,
     children: <h1>Test {id}</h1>,
