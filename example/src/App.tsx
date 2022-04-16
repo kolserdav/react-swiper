@@ -59,6 +59,7 @@ const App = (): React.ReactElement => {
           getNext={getNext}
           getPrev={getPrevios}
           invitationAnimation={true}
+          className="card__content"
           dots={{
             list: [0,1,2,3,4],
             active: current.id || 1

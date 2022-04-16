@@ -15,3 +15,7 @@ code {
   height: 80vh;
   position: relative;
 }
+
+.card__content {
+  background-color: rgba(0,0,0, 0.024);
+}
