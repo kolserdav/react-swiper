@@ -209,13 +209,13 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
   /**
    * Set to cards classes for in animation
    */
-  const setGoClassHandler = (): void => {
-    getRef(next?.id || 0).current?.classList.add(s.go);
-    getRef(prev?.id || 0).current?.classList.add(s.go);
+  const setGoClassHandler = (_next?: Swipe, _prev?: Swipe): void => {
+    getRef(_next?.id || next?.id || 0).current?.classList.add(s.go);
+    getRef(_prev?.id || prev?.id || 0).current?.classList.add(s.go);
     getRef(current?.id || 0).current?.classList.add(s.go);
     setTimeout(() => {
-      getRef(next?.id || 0).current?.classList.remove(s.go);
-      getRef(prev?.id || 0).current?.classList.remove(s.go);
+      getRef(_next?.id || next?.id || 0).current?.classList.remove(s.go);
+      getRef(_prev?.id || prev?.id || 0).current?.classList.remove(s.go);
       getRef(current?.id || 0).current?.classList.remove(s.go);
     }, SWIPE_TRANSITION_TIMEOUT);
   };
@@ -280,7 +280,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         if (onSwipe !== undefined) {
           onSwipe(currentId);
         }
-        setGoClassHandler();
+        setGoClassHandler(_next);
         setLeft(windowWidth * -1);
         startTime = new Date().getTime();
         if (next?.id === postNext?.id) {
@@ -309,7 +309,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         if (onSwipe !== undefined) {
           onSwipe(currentId);
         }
-        setGoClassHandler();
+        setGoClassHandler(undefined, _prev);
         setLeft(windowWidth);
         startTime = new Date().getTime();
         if (prev?.id === prePrev?.id) {
