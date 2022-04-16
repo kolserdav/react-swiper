@@ -12,23 +12,32 @@ import { Swiper, GetSwipeHandler, Swipe } from 'swiper';
 import 'swiper/dist/index.css';
 
 const COUNT = 4;
+const LAG = 250;
 
 const getNext: GetSwipeHandler = async (old) => {
   let id: any = old + 1;
   id = id <= COUNT ? id : null;
-  return {
-    id,
-    children: <h1>Test {id}</h1>,
-  };
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        id,
+        children: <h1>Test {id}</h1>,
+      })
+    }, LAG)
+  });
 };
 
 const getPrevios: GetSwipeHandler = async (old) => {
   let id = old - 1;
   id = id >= 0 ? id : COUNT;
-  return {
-    id,
-    children: <h1>Test {id}</h1>,
-  };
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        id,
+        children: <h1>Test {id}</h1>,
+      })
+    }, LAG)
+  });
 };
 
 const App = (): React.ReactElement => {
