@@ -487,19 +487,19 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     const currId = current?.id || 0;
     if (currId < active) {
       const next = await getNext(active - 1);
-      postNext = await getNext(active);
       setNext(next);
       const prev = await getPrev(next?.id || 0);
-      prePrev = await getPrev((next?.id || 0) - 1);
       await swipe(-1000, next, prev);
+      postNext = await getNext(active);
+      prePrev = await getPrev((next?.id || 0) - 1);
       setPrev(prev);
     } else {
       const prev = await getPrev(active + 1);
-      prePrev = await getPrev(active);
       setPrev(prev);
       const next = await getNext(prev?.id || 0);
-      postNext = await getNext((prev?.id || 0) + 1);
       await swipe(1000, next, prev);
+      postNext = await getNext((prev?.id || 0) + 1);
+      prePrev = await getPrev(active);
       setNext(next);
     }
   };
