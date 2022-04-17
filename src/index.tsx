@@ -490,16 +490,16 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
       setNext(next);
       const prev = await getPrev(next?.id || 0);
       await swipe(-1000, next, prev);
-      postNext = await getNext(active);
-      prePrev = await getPrev((next?.id || 0) - 1);
+      postNext = await getNext(next?.id || 0);
+      prePrev = await getPrev(prev?.id || 0);
       setPrev(prev);
     } else {
       const prev = await getPrev(active + 1);
       setPrev(prev);
       const next = await getNext(prev?.id || 0);
       await swipe(1000, next, prev);
-      postNext = await getNext((prev?.id || 0) + 1);
-      prePrev = await getPrev(active);
+      postNext = await getNext(next?.id || 0);
+      prePrev = await getPrev(prev?.id || 0);
       setNext(next);
     }
   };
