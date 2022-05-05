@@ -254,7 +254,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
   /**
    * Set pre previos or post next values
    */
-  const setPreValues = (_p: Swipe | null | undefined, _n: Swipe | null | undefined) => {
+  const setPreValues = (_p: Swipe | null | undefined, _n: Swipe | null | undefined): void => {
     if (_p) {
       getPrev(_p?.id || 0).then((d) => {
         prePrev = d;
@@ -454,7 +454,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
   /**
    * optional animation handler
    */
-  const infitationAnimationHandler = async (shift: number) => {
+  const infitationAnimationHandler = async (shift: number): Promise<void> => {
     if (shift < 0) {
       setGoClassHandler();
     } else {
@@ -567,7 +567,6 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     }
     // set is mobile
     if (typeof isMobile === 'undefined') {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       setIsMobile('ontouchstart' in window || typeof navigator?.msMaxTouchPoints !== 'undefined');
