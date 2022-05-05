@@ -27,6 +27,11 @@ import s from './styles.module.css';
 export const SWIPE_TRANSITION_TIMEOUT = 400;
 
 /**
+ * Minimum swipe speed regardless of distance
+ */
+export const SWIPE_ON_EVENT_SPEED = 0.7;
+
+/**
  * One of swipe card
  */
 export interface Swipe {
@@ -148,6 +153,7 @@ let prePrev: Swipe | null = null;
 let postNext: Swipe | null = null;
 let _defaultCurrent: Swipe;
 let oldSwipes: SwipeFull[] = [];
+let startTime = new Date().getTime();
 
 /**
  * Swiper component
@@ -264,11 +270,21 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
   /**
    * Run swipe animation
    */
-  const swipe = async (_lastLeft: number, _next?: Swipe, _prev?: Swipe): Promise<1 | 0> => {
+  const swipe = async ({
+    _lastLeft,
+    _next,
+    _prev,
+    speed,
+  }: {
+    _lastLeft: number;
+    _next?: Swipe;
+    _prev?: Swipe;
+    speed?: number;
+  }): Promise<1 | 0> => {
     setLoad(true);
     let startTime: number;
     let currentId: number | null | undefined = 0;
-    if (Math.abs(_lastLeft) > width / 3) {
+    if (Math.abs(_lastLeft) > width / 3 || (speed !== undefined && speed > SWIPE_ON_EVENT_SPEED)) {
       if (_lastLeft < 0) {
         if (next?.id === null) {
           setBackClassHandler();
@@ -354,6 +370,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         startClientX = clientX;
         startClientY = clientY;
         lastLeft = _left;
+        startTime = new Date().getTime();
         break;
       case 'onTouchMove':
         if (!blockSwipe) {
@@ -367,7 +384,10 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         break;
       case 'onTouchEnd':
         if (!blockSwipe) {
-          await swipe(lastLeft);
+          await swipe({
+            _lastLeft: lastLeft,
+            speed: Math.abs(lastLeft / (new Date().getTime() - startTime)),
+          });
         }
         break;
       default:
@@ -397,7 +417,9 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         setBackClassHandler();
       }
       await wait(SWIPE_TRANSITION_TIMEOUT);
-      await swipe(leftVal);
+      await swipe({
+        _lastLeft: leftVal,
+      });
       return 0;
     };
   };
@@ -489,7 +511,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
       const next = await getNext(active - 1);
       setNext(next);
       const prev = await getPrev(next?.id || 0);
-      await swipe(-1000, next, prev);
+      await swipe({ _lastLeft: -1000, _prev: prev, _next: next });
       postNext = await getNext(next?.id || 0);
       prePrev = await getPrev(prev?.id || 0);
       setPrev(prev);
@@ -497,7 +519,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
       const prev = await getPrev(active + 1);
       setPrev(prev);
       const next = await getNext(prev?.id || 0);
-      await swipe(1000, next, prev);
+      await swipe({ _lastLeft: 1000, _prev: prev, _next: next });
       postNext = await getNext(next?.id || 0);
       prePrev = await getPrev(prev?.id || 0);
       setNext(next);
