@@ -287,13 +287,11 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         _lastLeft,
         _next,
         _prev,
-        currentId,
         speed,
       }: {
         _lastLeft: number;
         _next: Swipe | undefined;
         _prev: Swipe | undefined;
-        currentId: number | null | undefined;
         speed?: number;
       }): Promise<1 | 0> => {
         setLoad(true);
@@ -310,7 +308,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
               return 1;
             }
             if (onSwipe !== undefined) {
-              onSwipe(currentId);
+              onSwipe(_next?.id);
             }
             setGoClassHandler(_next);
             setLeft(windowWidth * -1);
@@ -338,7 +336,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
               return 1;
             }
             if (onSwipe !== undefined) {
-              onSwipe(currentId);
+              onSwipe(_prev?.id);
             }
             setGoClassHandler(undefined, _prev);
             setLeft(windowWidth);
@@ -408,7 +406,6 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
                 speed: Math.abs(lastLeft / (new Date().getTime() - startTime)),
                 _next: next,
                 _prev: prev,
-                currentId: lastLeft > 0 ? next?.id : prev?.id,
               });
             }
             break;
@@ -447,7 +444,6 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
             _lastLeft: leftVal,
             _next: next,
             _prev: prev,
-            currentId: lastLeft > 0 ? next?.id : prev?.id,
           });
           return 0;
         };
@@ -549,9 +545,10 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
       const active = parseInt(tabindex, 10);
       const currentId = current?.id || 0;
       const _lastLeft = currentId < active ? -1000 : 1000;
-      const _prev = await getPrev(active);
-      const _next = await getNext(active);
-      swipe({ _lastLeft, _prev, _next, currentId: active });
+      const shiftActive = currentId < active ? active - 1 : active + 1;
+      const _prev = await getPrev(shiftActive);
+      const _next = await getNext(shiftActive);
+      swipe({ _lastLeft, _prev, _next });
       setPreValues(_prev, _next);
     },
     [current?.id, getNext, getPrev, swipe, setPreValues]
