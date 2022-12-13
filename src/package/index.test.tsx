@@ -7,10 +7,10 @@
  * Copyright: kolserdav, All rights reserved (c)
  * Create date: Mon Nov 29 2021 16:18:08 GMT+0700 (Krasnoyarsk Standard Time)
  ******************************************************************************************/
-import { ExampleComponent } from '.'
+import { Swiper } from '.';
 
-describe('ExampleComponent', () => {
+describe('Swiper', () => {
   it('is truthy', () => {
-    expect(ExampleComponent).toBeTruthy()
-  })
-})
+    expect(Swiper).toBeTruthy();
+  });
+});

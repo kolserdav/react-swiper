@@ -8,22 +8,21 @@
  * Create date: Mon Nov 29 2021 16:18:08 GMT+0700 (Krasnoyarsk Standard Time)
  ******************************************************************************************/
 import React, { useState, useEffect } from 'react';
-import { Swiper, GetSwipeHandler, Swipe } from 'swiper';
-import 'swiper/dist/index.css';
+import { Swiper, GetSwipeHandler, Swipe } from './package/index';
 
-const COUNT = 4;
+const COUNT = 6;
 const LAG = 250;
 
 const getNext: GetSwipeHandler = async (old) => {
   let id: any = old + 1;
-  id = id <= COUNT ? id : null;
+  id = id <= COUNT ? id : 0;
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
         id,
         children: <h1>Test {id}</h1>,
-      })
-    }, LAG)
+      });
+    }, LAG);
   });
 };
 
@@ -35,8 +34,8 @@ const getPrevios: GetSwipeHandler = async (old) => {
       resolve({
         id,
         children: <h1>Test {id}</h1>,
-      })
-    }, LAG)
+      });
+    }, LAG);
   });
 };
 
@@ -51,7 +50,7 @@ const App = (): React.ReactElement => {
   }, [current]);
 
   return (
-    <div className='container'>
+    <div className="container">
       {current && (
         <Swiper
           blockSwipe={false}
@@ -61,8 +60,8 @@ const App = (): React.ReactElement => {
           invitationAnimation={true}
           className="card__content"
           dots={{
-            list: [0,1,2,3,4],
-            active: current.id || 1
+            list: [0, 1, 2, 3, 4, 5, 6],
+            active: current.id || 1,
           }}
         />
       )}

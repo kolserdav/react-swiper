@@ -19,7 +19,12 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "ignorePatterns": "bin",
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "ignorePatterns": ["bin", "node_modules"],
   "plugins": [
     "@typescript-eslint",
     "react",

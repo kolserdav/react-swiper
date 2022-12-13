@@ -7,7 +7,7 @@
   "repository": "https://github.com/kolserdav/react-swiper",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
-  "source": "src/index.tsx",
+  "source": "src/package/index.tsx",
   "engines": {
     "node": ">=10"
   },
@@ -19,51 +19,54 @@
     "slider"
   ],
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs",
-    "start": "microbundle-crl watch --no-compress --format modern,cjs",
-    "prepare": "run-s build",
-    "test": "run-s test:unit test:lint test:build",
-    "test:build": "run-s build",
+    "start": "react-scripts start",
+    "dev": "concurrently \"npm run watch\" \"npm run start\"",
+    "compile": "webpack --env NODE_ENV=production",
+    "watch": "webpack --env NODE_ENV=development --watch",
     "test:lint": "eslint .",
-    "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
+    "test:unit": "cross-env CI=1 react-scripts test --env=jsdom ",
     "test:watch": "react-scripts test --env=jsdom",
-    "predeploy": "cd example && yarn install && yarn run build",
+    "predeploy": "cd example && npm install && npm run build",
     "deploy": "fhead && gh-pages -d example/build"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^25.1.4",
-    "@types/node": "^12.12.38",
-    "@types/react": "^18.0.3",
-    "@types/react-dom": "^18.0.0",
-    "@typescript-eslint/eslint-plugin": "^2.26.0",
-    "@typescript-eslint/parser": "^2.26.0",
-    "microbundle-crl": "^0.13.10",
+    "@types/node": "^16.18.8",
+    "@types/react": "^18.0.26",
+    "@types/react-dom": "^18.0.9",
+    "@typescript-eslint/parser": "^5.46.1",
     "babel-eslint": "^10.0.3",
+    "clean-webpack-plugin": "^4.0.0",
+    "concurrently": "^7.6.0",
     "cross-env": "^7.0.2",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.7.0",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-config-standard-react": "^9.2.0",
-    "eslint-plugin-eslint-plugin": "^4.1.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-node": "^11.0.0",
-    "eslint-plugin-prettier": "^3.1.1",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.17.0",
-    "eslint-plugin-standard": "^4.0.1",
+    "css-loader": "^6.7.2",
+    "eslint": "^8.29.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-config-standard-react": "^12.0.0",
+    "eslint-plugin-eslint-plugin": "^5.0.6",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-standard": "^5.0.0",
     "gh-pages": "^2.2.0",
-    "npm-run-all": "^4.1.5",
+    "mini-css-extract-plugin": "^2.7.2",
+    "postcss-loader": "^7.0.2",
     "prettier": "^2.0.4",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-scripts": "^3.4.1",
-    "typescript": "^3.7.5"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "^5.0.1",
+    "sass": "^1.56.2",
+    "sass-loader": "^13.2.0",
+    "source-map-loader": "^4.0.1",
+    "ts-loader": "^9.4.2",
+    "typescript": "^4.9.4",
+    "webpack-cli": "^5.0.1"
   },
   "files": [
     "dist"
@@ -89,5 +92,17 @@
     "licenseText": "The code is distributed as is. There are no guarantees regarding the functionality of the code or parts of it.",
     "copyright": "kolserdav, All rights reserved (c)",
     "renewAll": false
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
