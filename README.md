@@ -15,7 +15,7 @@ npm install --save @kolserdav/swiper
 ```tsx
 import React, { useState, useEffect } from 'react';
 import { Swiper, GetSwipeHandler, Swipe } from '@kolserdav/swiper';
-import '@kolserdav/swiper/dist/index.css'; // From version 3.0.0 is required
+import '@kolserdav/swiper/dist/index.css';
 
 const COUNT = 4;
 
@@ -99,7 +99,7 @@ interface SwiperProps {
    */
   onSwipe?: (currentId: number) => void;
 
-   /**
+  /**
    * Auto slide if provieded
    */
   durationAnimation?: number;

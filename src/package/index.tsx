@@ -461,23 +461,6 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
    */
   const clickPrevHandler = clickHandler('prev');
 
-  const resizeHandler = (): void => {
-    const _width = containerRef?.current?.parentElement?.getBoundingClientRect()?.width;
-    const _height = containerRef?.current?.parentElement?.getBoundingClientRect()?.height;
-    const __left = containerRef?.current?.parentElement?.getBoundingClientRect()?.left;
-    const _windowWidth = document.body.clientWidth;
-    if (_width && _height) {
-      setWidth(_width);
-      setHeight(_height);
-    }
-    if (__left) {
-      setLeft(__left);
-    }
-    if (_windowWidth) {
-      setWindowWidth(_windowWidth);
-    }
-  };
-
   /**
    * optional animation handler
    */
@@ -514,9 +497,8 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
       setNext(_n);
       _defaultCurrent = defaultCurrent;
       setLoad(false);
-      setPreValues(_p, _n);
     },
-    [defaultCurrent, getNext, getPrev, setPreValues]
+    [defaultCurrent, getNext, getPrev]
   );
 
   /**
@@ -545,15 +527,52 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
       const active = parseInt(tabindex, 10);
       const currentId = current?.id || 0;
       const _lastLeft = currentId < active ? -1000 : 1000;
-      const shiftActive = currentId < active ? active - 1 : active + 1;
-      const _prev = await getPrev(shiftActive);
-      const _next = await getNext(shiftActive);
+      const _prev = await getPrev(currentId > active ? active + 1 : active - 1);
+      const _next = await getNext(currentId > active ? active - 1 : active - 1);
       swipe({ _lastLeft, _prev, _next });
-      setPreValues(_prev, _next);
     },
-    [current?.id, getNext, getPrev, swipe, setPreValues]
+    [current?.id, getNext, getPrev, swipe]
   );
 
+  /**
+   * Set button listeners
+   */
+  useEffect(() => {
+    const buttonNext = current?.nextRef?.current;
+    const buttonClose = current?.closeRef?.current;
+    buttonNext?.addEventListener('click', clickNextHandler);
+    buttonClose?.addEventListener('click', clickNextHandler);
+    return (): void => {
+      buttonNext?.removeEventListener('click', clickNextHandler);
+      buttonClose?.removeEventListener('click', clickNextHandler);
+    };
+  }, [clickNextHandler, current]);
+
+  /**
+   * Set width and height
+   */
+  useEffect(() => {
+    const _width = containerRef?.current?.parentElement?.getBoundingClientRect()?.width;
+    const _height = containerRef?.current?.parentElement?.getBoundingClientRect()?.height;
+    if (_width && !width && _height && !height) {
+      setWidth(_width);
+      setHeight(_height);
+    }
+  }, [containerRef, width, height]);
+
+  /**
+   * Save container left
+   */
+  useEffect(() => {
+    const __left = containerRef?.current?.parentElement?.getBoundingClientRect()?.left;
+    if (__left && !left) {
+      _setLeft(__left);
+    }
+  }, [containerRef, left]);
+
+  /**
+   * Auto slide
+   */
   useEffect(() => {
     let clearAnimate: NodeJS.Timeout;
     if (durationAnimation) {
@@ -561,70 +580,86 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         clickNextHandler();
       }, durationAnimation);
     }
-    const _width = containerRef?.current?.parentElement?.getBoundingClientRect()?.width;
-    const _height = containerRef?.current?.parentElement?.getBoundingClientRect()?.height;
-    const __left = containerRef?.current?.parentElement?.getBoundingClientRect()?.left;
+    return () => {
+      if (clearAnimate) {
+        clearInterval(clearAnimate);
+      }
+    };
+  }, [durationAnimation, clickNextHandler]);
 
-    const _windowWidth = document.body.clientWidth;
-    const buttonNext = current?.nextRef?.current;
-    const buttonClose = current?.closeRef?.current;
-    buttonNext?.addEventListener('click', clickNextHandler);
-    buttonClose?.addEventListener('click', clickNextHandler);
-    if (_width && !width && _height && !height) {
-      setWidth(_width);
-      setHeight(_height);
-    }
-    // save container left
-    if (__left && !left) {
-      _setLeft(__left);
-    }
-    // save window width
-    if (!windowWidth && _windowWidth) {
-      setWindowWidth(_windowWidth);
-    }
-    // set start cards
+  /**
+   * Set start cards
+   */
+  useEffect(() => {
     if (!current || !prev || !next || _defaultCurrent !== defaultCurrent) {
       setStartCards();
     }
-    // run invitation animation
+  }, [current, next, prev, defaultCurrent, setStartCards]);
+
+  /**
+   * Save window width
+   */
+  useEffect(() => {
+    const _windowWidth = document.body.clientWidth;
+    if (!windowWidth && _windowWidth) {
+      setWindowWidth(_windowWidth);
+    }
+  }, [windowWidth]);
+
+  /**
+   * Run invitation animation
+   */
+  useEffect(() => {
     if (invitationAnimation && width && !animated) {
       if (prev && next) {
         animated = true;
         startInvitationAnimation(prev, next);
       }
     }
-    // set is mobile
+  }, [invitationAnimation, next, prev, startInvitationAnimation, width]);
+
+  /**
+   * Listen resize
+   */
+  useEffect(() => {
+    const resizeHandler = (): void => {
+      const _width = containerRef?.current?.parentElement?.getBoundingClientRect()?.width;
+      const _height = containerRef?.current?.parentElement?.getBoundingClientRect()?.height;
+      const __left = containerRef?.current?.parentElement?.getBoundingClientRect()?.left;
+      const _windowWidth = document.body.clientWidth;
+      if (_width && _height) {
+        setWidth(_width);
+        setHeight(_height);
+      }
+      if (__left) {
+        setLeft(__left);
+      }
+      if (_windowWidth) {
+        setWindowWidth(_windowWidth);
+      }
+    };
+    window.addEventListener('resize', resizeHandler);
+    return (): void => {
+      window.removeEventListener('resize', resizeHandler);
+    };
+  }, []);
+
+  /**
+   * Set is mobile
+   */
+  useEffect(() => {
     if (typeof isMobile === 'undefined') {
       // @ts-ignore
       setIsMobile('ontouchstart' in window || typeof navigator?.msMaxTouchPoints !== 'undefined');
     }
+  }, [isMobile]);
+
+  /**
+   * Set pre values
+   */
+  useEffect(() => {
     setPreValues(prev, next);
-    window.addEventListener('resize', resizeHandler);
-    return (): void => {
-      if (clearAnimate) {
-        clearInterval(clearAnimate);
-      }
-      window.removeEventListener('resize', resizeHandler);
-      buttonNext?.removeEventListener('click', clickNextHandler);
-      buttonClose?.removeEventListener('click', clickNextHandler);
-    };
-  }, [
-    next,
-    defaultCurrent,
-    clickNextHandler,
-    current,
-    durationAnimation,
-    height,
-    invitationAnimation,
-    isMobile,
-    left,
-    prev,
-    setPreValues,
-    setStartCards,
-    startInvitationAnimation,
-    width,
-    windowWidth,
-  ]);
+  }, [prev, next, setPreValues]);
 
   return (
     <div className={s.container} ref={containerRef}>
