@@ -314,6 +314,36 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
     []
   );
 
+  const goSwipe = useMemo(
+    () =>
+      async (
+        {
+          newNext,
+          newPrev,
+          coeff,
+        }: {
+          newPrev: Swipe | undefined;
+          newNext: Swipe | undefined;
+          coeff: 1 | -1;
+        },
+        _next: Swipe | undefined,
+        _prev: Swipe | undefined
+      ) => {
+        if (_next?.id === null || _prev?.id === null) {
+          goSwipeBack();
+          return 1;
+        }
+        if (onSwipe !== undefined) {
+          onSwipe(_next?.id || _prev?.id);
+        }
+        startSwipe(_next, _prev, windowWidth * coeff);
+        await wait(SWIPE_TRANSITION_TIMEOUT);
+        endSwipe({ _prev: newPrev, _current: _next || _prev, _next: newNext });
+        return 0;
+      },
+    [endSwipe, goSwipeBack, onSwipe, startSwipe, windowWidth]
+  );
+
   /**
    * Run swipe animation
    */
@@ -336,36 +366,17 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
           (speed !== undefined && speed > SWIPE_ON_EVENT_SPEED)
         ) {
           if (_lastLeft < 0) {
-            if (_next?.id === null) {
-              goSwipeBack();
-              return 1;
-            }
-            if (onSwipe !== undefined) {
-              onSwipe(_next?.id);
-            }
-            startSwipe(_next, undefined, windowWidth * -1);
-            await wait(SWIPE_TRANSITION_TIMEOUT);
-            endSwipe({ _prev: current, _current: _next, _next: postNext });
+            await goSwipe({ newPrev: current, newNext: postNext, coeff: -1 }, _next, undefined);
           } else {
-            if (_prev?.id === null) {
-              goSwipeBack();
-              return 1;
-            }
-            if (onSwipe !== undefined) {
-              onSwipe(_prev?.id);
-            }
-            startSwipe(undefined, _prev, windowWidth);
-            await wait(SWIPE_TRANSITION_TIMEOUT);
-            endSwipe({ _prev: prePrev, _current: _prev, _next: current });
+            await goSwipe({ newPrev: prePrev, newNext: current, coeff: 1 }, undefined, _prev);
           }
         } else {
           goSwipeBack();
-          return 1;
         }
         setLoad(false);
         return 0;
       },
-    [current, onSwipe, goSwipeBack, width, prePrev, postNext, endSwipe, startSwipe, windowWidth]
+    [current, goSwipeBack, width, prePrev, postNext, goSwipe]
   );
 
   /**
@@ -387,6 +398,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
             startClientY = clientY;
             lastLeft = _left;
             startTime = new Date().getTime();
+
             break;
           case 'onTouchMove':
             if (!blockSwipe) {
