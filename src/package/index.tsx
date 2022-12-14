@@ -537,12 +537,37 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
       const tabindex = target?.getAttribute('tabindex');
       const active = parseInt(tabindex, 10);
       const currentId = current?.id || 0;
-      const _lastLeft = currentId < active ? -1000 : 1000;
-      const _prev = await getPrev(currentId > active ? active + 1 : active - 1);
-      const _next = await getNext(currentId > active ? active - 1 : active - 1);
-      swipe({ _lastLeft, _prev, _next });
+      let newCurrent: Swipe | undefined;
+      let newPrev: Swipe | undefined;
+      let newNext: Swipe | undefined;
+      if (currentId === next?.id) {
+        newCurrent = next;
+        newNext = postNext;
+        newPrev = current;
+      } else if (currentId === prev?.id) {
+        newCurrent = prev;
+        newNext = current;
+        newPrev = prePrev;
+      } else if (currentId === prePrev?.id) {
+        newCurrent = prePrev;
+        newNext = prev;
+        newPrev = await getPrev(prePrev?.id);
+      } else if (currentId === postNext?.id) {
+        newCurrent = postNext;
+        newPrev = next;
+        newNext = await getPrev(postNext?.id);
+      } else {
+        newCurrent = await getNext(active - 1);
+        newNext = await getNext(newCurrent?.id || 0);
+        newPrev = await getPrev(newCurrent?.id || 0);
+      }
+      if (currentId < active) {
+        await goSwipe({ newPrev, newNext, coeff: -1 }, newCurrent, undefined);
+      } else {
+        await goSwipe({ newPrev, newNext, coeff: 1 }, undefined, newCurrent);
+      }
     },
-    [current?.id, getNext, getPrev, swipe]
+    [getNext, getPrev, goSwipe, current, next, postNext, prePrev, prev]
   );
 
   /**
