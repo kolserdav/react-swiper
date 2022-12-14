@@ -149,8 +149,6 @@ let startClientX: number;
 let startClientY: number;
 let lastLeft: number;
 let animated = false;
-let prePrev: Swipe | undefined;
-let postNext: Swipe | undefined;
 let _defaultCurrent: Swipe;
 let oldSwipes: SwipeFull[] = [];
 let startTime = new Date().getTime();
@@ -174,6 +172,8 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
   const [current, setCurrent] = useState<Swipe>();
   const [prev, setPrev] = useState<Swipe>();
   const [next, setNext] = useState<Swipe>();
+  const [prePrev, setPrePrev] = useState<Swipe>();
+  const [postNext, setPostNext] = useState<Swipe>();
   const [windowWidth, setWindowWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
   const [width, setWidth] = useState<number>(0);
@@ -266,16 +266,52 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
       (_p: Swipe | undefined, _n: Swipe | undefined): void => {
         if (_p) {
           getPrev(_p?.id || 0).then((d) => {
-            prePrev = d;
+            setPrePrev(d);
           });
         }
         if (_n) {
           getNext(_n?.id || 0).then((d) => {
-            postNext = d;
+            setPostNext(d);
           });
         }
       },
     [getNext, getPrev]
+  );
+
+  const goSwipeBack = useMemo(
+    () => () => {
+      setBackClassHandler();
+      setLeft(0);
+      setLoad(false);
+    },
+    [setBackClassHandler, setLeft, setLoad]
+  );
+
+  const startSwipe = useMemo(
+    () => (_next: Swipe | undefined, _prev: Swipe | undefined, _left: number) => {
+      setGoClassHandler(_next, _prev);
+      setLeft(_left);
+    },
+    [setGoClassHandler]
+  );
+
+  const endSwipe = useMemo(
+    () =>
+      ({
+        _prev,
+        _current,
+        _next,
+      }: {
+        _prev: Swipe | undefined;
+        _current: Swipe | undefined;
+        _next: Swipe | undefined;
+      }) => {
+        setLeft(0);
+        setPrev(_prev);
+        setCurrent(_current);
+        setNext(_next);
+      },
+    []
   );
 
   /**
@@ -295,78 +331,41 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         speed?: number;
       }): Promise<1 | 0> => {
         setLoad(true);
-        let startTime: number;
         if (
           Math.abs(_lastLeft) > width / 3 ||
           (speed !== undefined && speed > SWIPE_ON_EVENT_SPEED)
         ) {
           if (_lastLeft < 0) {
             if (_next?.id === null) {
-              setBackClassHandler();
-              setLeft(0);
-              setLoad(false);
+              goSwipeBack();
               return 1;
             }
             if (onSwipe !== undefined) {
               onSwipe(_next?.id);
             }
-            setGoClassHandler(_next);
-            setLeft(windowWidth * -1);
-            startTime = new Date().getTime();
-            if (_next?.id === postNext?.id) {
-              await new Promise((resolve) => {
-                const clear = setInterval(() => {
-                  if (_next?.id !== postNext?.id) {
-                    clearInterval(clear);
-                    resolve(0);
-                  }
-                }, 0);
-              });
-            }
-            await wait(SWIPE_TRANSITION_TIMEOUT - (new Date().getTime() - startTime));
-            setLeft(0);
-            setPrev(current);
-            setCurrent(_next);
-            setNext(postNext);
+            startSwipe(_next, undefined, windowWidth * -1);
+            await wait(SWIPE_TRANSITION_TIMEOUT);
+            endSwipe({ _prev: current, _current: _next, _next: postNext });
           } else {
             if (_prev?.id === null) {
-              setBackClassHandler();
-              setLeft(0);
-              setLoad(false);
+              goSwipeBack();
               return 1;
             }
             if (onSwipe !== undefined) {
               onSwipe(_prev?.id);
             }
-            setGoClassHandler(undefined, _prev);
-            setLeft(windowWidth);
-            startTime = new Date().getTime();
-            if (_prev?.id === prePrev?.id) {
-              await new Promise((resolve) => {
-                const clear = setInterval(() => {
-                  if (_prev?.id !== prePrev?.id) {
-                    clearInterval(clear);
-                    resolve(0);
-                  }
-                }, 0);
-              });
-            }
-            await wait(SWIPE_TRANSITION_TIMEOUT - (new Date().getTime() - startTime));
-            setLeft(0);
-            setPrev(prePrev);
-            setCurrent(_prev);
-            setNext(current);
+            startSwipe(undefined, _prev, windowWidth);
+            await wait(SWIPE_TRANSITION_TIMEOUT);
+            endSwipe({ _prev: prePrev, _current: _prev, _next: current });
           }
         } else {
-          setBackClassHandler();
-          setLeft(0);
-          setLoad(false);
+          goSwipeBack();
           return 1;
         }
         setLoad(false);
         return 0;
       },
-    [current, onSwipe, setBackClassHandler, setGoClassHandler, width, windowWidth]
+    [current, onSwipe, goSwipeBack, width, prePrev, postNext, endSwipe, startSwipe, windowWidth]
   );
 
   /**
