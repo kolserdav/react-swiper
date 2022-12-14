@@ -1,12 +1,11 @@
 {
   "name": "@kolserdav/swiper",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "description": "Simple and powerfull react swiper component",
   "author": "kolserdav",
   "license": "MIT",
   "repository": "https://github.com/kolserdav/react-swiper",
   "main": "dist/index.js",
-  "module": "dist/index.modern.js",
   "source": "src/package/index.tsx",
   "engines": {
     "node": ">=10"
@@ -21,12 +20,12 @@
   "scripts": {
     "start": "react-scripts start",
     "dev": "npm run start",
-    "build": "webpack --env NODE_ENV=production",
+    "compile": "webpack --env NODE_ENV=production",
+    "build": "npm run compile && react-scripts build",
     "test:lint": "eslint .",
     "test:unit": "cross-env CI=1 react-scripts test --env=jsdom ",
     "test:watch": "react-scripts test --env=jsdom",
-    "predeploy": "cd example && npm install && npm run build",
-    "deploy": "fhead && gh-pages -d example/build"
+    "deploy": "gh-pages -d build"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
