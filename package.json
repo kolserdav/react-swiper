@@ -6,6 +6,7 @@
   "license": "MIT",
   "repository": "https://github.com/kolserdav/react-swiper",
   "main": "dist/Swiper.js",
+  "source": "src/components/Swiper.tsx",
   "engines": {
     "node": ">=18"
   },
@@ -22,11 +23,10 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "compile": "rimraf dist && webpack --mode production && npm run types",
+    "compile": "rimraf dist && webpack --mode production",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "types": "tsc --noEmit false --declaration --emitDeclarationOnly --outDir ./dist -p .",
     "fhead": "fhead"
   },
   "dependencies": {
@@ -37,10 +37,6 @@
     "save-dev": "^0.0.1-security"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.25.4",
-    "@babel/preset-flow": "^7.24.7",
-    "@babel/preset-react": "^7.24.7",
-    "@babel/preset-typescript": "^7.24.7",
     "@types/node": "^20.16.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -52,6 +48,7 @@
     "eslint-config-next": "14.2.8",
     "fhead": "^3.2.8",
     "rimraf": "^6.0.1",
+    "source-map-loader": "^5.0.0",
     "style-loader": "^4.0.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5",

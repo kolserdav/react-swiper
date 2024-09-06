@@ -9,10 +9,12 @@ const __dirname = path.dirname(__filename);
  * @type {import('webpack').Configuration}
  */
 const config = {
-  entry: './src/components/Swiper.tsx',
+  target: 'node',
+  entry: './src/components/Test.tsx',
   context: __dirname,
+  devtool: 'source-map',
   output: {
-    path: path.resolve(process.cwd(), 'dist'),
+    path: path.resolve(__dirname, 'dist'),
     filename: 'Swiper.js',
     library: 'ReactSwiper',
     libraryTarget: 'umd',
@@ -22,14 +24,15 @@ const config = {
     rules: [
       {
         test: /\.tsx?$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
+        loader: 'ts-loader',
+        options: {
+          configFile: 'tsconfig.compile.json',
         },
       },
+      { test: /\.js$/, loader: 'source-map-loader' },
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        test: /\.(scss|css)$/i,
+        use: ['css-loader'],
       },
     ],
   },
