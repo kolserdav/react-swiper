@@ -8,8 +8,10 @@
  * Copyright: kolserdav, All rights reserved (c)
  * Create Date: Fri Sep 06 2024 18:44:44 GMT+0700 (Krasnoyarsk Standard Time)
  ******************************************************************************************/
+import React from 'react';
 import s from "@/styles/Home.module.css";
-import { GetSwipeHandler, Swipe, Swiper } from "@/src/components/Swiper";
+
+import ReactSwiper, { GetSwipeHandler, Swipe } from "../dist/Swiper";
 import { useEffect, useState } from "react";
 
 const COUNT = 6;
@@ -51,10 +53,15 @@ const App = (): React.ReactElement => {
     }
   }, [current]);
 
+useEffect(() => {
+
+console.log(1, window)
+}, [])
+  
   return (
     <div className={s.container}>
       {current && (
-        <Swiper
+        <ReactSwiper
           blockSwipe={false}
           defaultCurrent={current}
           getNext={getNext}

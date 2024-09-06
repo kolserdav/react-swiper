@@ -62,7 +62,7 @@ type TouchName = 'onTouchMove' | 'onTouchStart' | 'onTouchEnd';
 /**
  * Props of Swiper component
  */
-interface SwiperProps {
+export interface SwiperProps {
   /**
    * Current card content
    */
@@ -155,7 +155,7 @@ let startTime = new Date().getTime();
 /**
  * Swiper component
  */
-export function ReactSwiper(props: SwiperProps): React.ReactElement {
+export default function ReactSwiper(props: SwiperProps): React.ReactElement {
   const {
     defaultCurrent,
     getNext,

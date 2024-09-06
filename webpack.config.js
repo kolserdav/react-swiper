@@ -10,8 +10,11 @@ const __dirname = path.dirname(__filename);
  */
 const config = {
   target: 'node',
-  entry: './src/components/Test.tsx',
+  entry: './src/Swiper.tsx',
   context: __dirname,
+  node: {
+    global: true,
+  },
   devtool: 'source-map',
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -44,7 +47,6 @@ const config = {
   },
   externals: {
     react: 'react',
-    'react-dom': 'react-dom',
   },
 };
 

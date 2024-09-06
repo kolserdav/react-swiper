@@ -26,11 +26,9 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "**/**/*.tsx"
   ],
   "exclude": [
     "node_modules",
-    "dist",
-    "pages"
+    "dist"
   ]
 }
