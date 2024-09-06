@@ -31,11 +31,16 @@ const config = {
       },
       { test: /\.js$/, loader: 'source-map-loader' },
       {
-        test: /\.(scss|css)$/i,
-        use: ['css-loader'],
+        test: /\.module\.css$/i,
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
     ],
   },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'styles.css',
+    }),
+  ],
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     alias: {
