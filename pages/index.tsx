@@ -1,17 +1,9 @@
-/******************************************************************************************
- * Repository: https://github.com/kolserdav/swiper.git
- * Author: Sergey Kolmiller
- * Email: <serega12101983@gmail.com>
- * License: MIT
- * License Text: The code is distributed as is. There are no guarantees regarding the functionality of the code or parts of it.
- * Copyright: kolserdav, All rights reserved (c)
- * Create date: Mon Nov 29 2021 16:18:08 GMT+0700 (Krasnoyarsk Standard Time)
- ******************************************************************************************/
-import React, { useState, useEffect } from 'react';
-import { Swiper, GetSwipeHandler, Swipe } from './package/index';
+import s from "@/styles/Home.module.css";
+import { GetSwipeHandler, Swipe, Swiper } from "@/src/components/Swiper";
+import { useEffect, useState } from "react";
 
 const COUNT = 6;
-const LAG = 250;
+const LAG = 25;
 
 const getNext: GetSwipeHandler = async (old) => {
   let id: any = old + 1;
@@ -50,7 +42,7 @@ const App = (): React.ReactElement => {
   }, [current]);
 
   return (
-    <div className="container">
+    <div className={s.container}>
       {current && (
         <Swiper
           blockSwipe={false}

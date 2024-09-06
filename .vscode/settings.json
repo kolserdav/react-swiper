@@ -1,13 +1,18 @@
 {
-  "eslint.validate": ["javascript", "javascriptreact", "html", "typescriptreact"],
-  "eslint.options": { "overrideConfigFile": ".eslintrc" },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "eslint.validate": ["javascript", "typescript"],
+  "eslint.workingDirectories": ["./"],
   "eslint.format.enable": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
   },
-  "files.associations": {
-    ".env.development": "ini",
-    ".env.production": "ini"
+  "editor.formatOnSave": true,
+  "stylelint.enable": true,
+  "stylelint.validate": ["css", "scss"],
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint",
   }
 }

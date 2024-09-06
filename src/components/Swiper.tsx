@@ -19,7 +19,7 @@ import React, {
   MouseEventHandler,
 } from 'react';
 import clsx from 'clsx';
-import s from './styles.module.css';
+import s from './Swiper.module.css';
 
 /**
  * Time to miliseconds of change animation by card left value
@@ -85,13 +85,11 @@ interface SwiperProps {
   /**
    * invitation animation
    */
-  // eslint-disable-next-line react/require-default-props
   invitationAnimation?: boolean;
 
   /**
    * On swipe callback
    */
-  // eslint-disable-next-line react/require-default-props
   onSwipe?: (currentId: number | null | undefined) => void;
 
   /**
@@ -198,7 +196,7 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
         next || getDefaultSwipe(),
         oldSwipes
       ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+ 
     [next, prev, current]
   );
 
@@ -810,8 +808,4 @@ export const Swiper = (props: SwiperProps): React.ReactElement => {
       )}
     </div>
   );
-};
-
-Swiper.defaultProps = {
-  className: '',
 };

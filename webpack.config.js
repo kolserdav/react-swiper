@@ -1,55 +1,40 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 // @ts-check
+import path from "path";
 
-const webpack = require('webpack');
-const path = require('path');
-const fs = require('fs');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
-module.exports = ({ NODE_ENV }) => ({
-  mode: NODE_ENV,
-  target: 'node',
-  context: __dirname,
-  entry: './src/package/index.tsx',
+/**
+ * @type {import('webpack').Configuration}
+ */
+const config = {
+  entry: "./src/components/Swiper.tsx",
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js',
-    libraryTarget: 'umd',
+    path: path.resolve(process.cwd(), "dist"),
+    filename: "Swiper.js",
+    library: "React Swiper",
+    libraryTarget: "umd",
+    globalObject: "this",
   },
-  devtool: 'source-map',
-  resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
-    alias: {
-      react: path.resolve(__dirname, './node_modules/react'),
-    },
-  },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new webpack.BannerPlugin(fs.readFileSync(path.resolve(__dirname, './LICENSE'), 'utf8')),
-    new MiniCssExtractPlugin({
-      filename: 'styles.css',
-    }),
-  ],
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'ts-loader',
-        options: {
-          configFile: 'tsconfig.compile.json',
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
         },
       },
-      { test: /\.js$/, loader: 'source-map-loader' },
       {
-        test: /\.(scss|css)$/i,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
       },
     ],
   },
-  externals: [
-    {
-      react: 'react',
-    },
-  ],
-});
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
+  externals: {
+    react: "react",
+    "react-dom": "react-dom",
+  },
+};
+
+export default config;
