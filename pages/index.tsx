@@ -10,8 +10,7 @@
  ******************************************************************************************/
 import React from 'react';
 import s from "@/styles/Home.module.css";
-
-import ReactSwiper, { GetSwipeHandler, Swipe } from "../dist/Swiper";
+import ReactSwiper, { GetSwipeHandler, Swipe } from "@/src/Swiper";
 import { useEffect, useState } from "react";
 
 const COUNT = 6;
@@ -53,11 +52,6 @@ const App = (): React.ReactElement => {
     }
   }, [current]);
 
-useEffect(() => {
-
-console.log(1, window)
-}, [])
-  
   return (
     <div className={s.container}>
       {current && (
