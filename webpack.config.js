@@ -1,17 +1,22 @@
 // @ts-check
-import path from "path";
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * @type {import('webpack').Configuration}
  */
 const config = {
-  entry: "./src/components/Swiper.tsx",
+  entry: './src/components/Swiper.tsx',
+  context: __dirname,
   output: {
-    path: path.resolve(process.cwd(), "dist"),
-    filename: "Swiper.js",
-    library: "React Swiper",
-    libraryTarget: "umd",
-    globalObject: "this",
+    path: path.resolve(process.cwd(), 'dist'),
+    filename: 'Swiper.js',
+    library: 'ReactSwiper',
+    libraryTarget: 'umd',
+    globalObject: 'this',
   },
   module: {
     rules: [
@@ -19,21 +24,24 @@ const config = {
         test: /\.tsx?$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
         },
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: ['.tsx', '.ts', '.js'],
+    alias: {
+      react: path.resolve(__dirname, './node_modules/react'),
+    },
   },
   externals: {
-    react: "react",
-    "react-dom": "react-dom",
+    react: 'react',
+    'react-dom': 'react-dom',
   },
 };
 

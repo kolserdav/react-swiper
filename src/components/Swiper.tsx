@@ -155,7 +155,7 @@ let startTime = new Date().getTime();
 /**
  * Swiper component
  */
-export const Swiper = (props: SwiperProps): React.ReactElement => {
+export default function ReactSwiper(props: SwiperProps): React.ReactElement {
   const {
     defaultCurrent,
     getNext,
