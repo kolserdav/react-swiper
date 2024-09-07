@@ -124,10 +124,10 @@
 }
 
 .icon__button_dark:hover {
-  background-color: rgba(255, 255, 255, 0.084)
+  background-color: rgba(102, 99, 99, 0.84)
 }
 .icon__button_dark:active {
-  background-color: rgba(233, 235, 236, 0.009)
+  background-color: rgba(233, 235, 236, 0.09)
 }
 
 .icon__button_light:hover {

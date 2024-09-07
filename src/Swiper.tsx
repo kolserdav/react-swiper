@@ -747,7 +747,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
               ref={getRef(item.id)}
             >
               {/** Block of content */}
-              <div className={clsx(className, s.content, darkTheme ? s.content_dark : '')}>
+              <div className={clsx(s.content, darkTheme ? s.content_dark : '', className)}>
                 {item.children}
               </div>
             </div>
