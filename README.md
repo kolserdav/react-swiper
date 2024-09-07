@@ -113,6 +113,7 @@ interface SwiperProps {
    * Show dots
    */
   dots?: {
+    inactive: boolean;
     list: number[];
     active: number;
   };

@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/control-has-associated-label */
 /******************************************************************************************
  * Repository: https://github.com/kolserdav/react-swiper.git
  * File name: Swiper.tsx
@@ -18,10 +20,13 @@ import React, {
   TouchEvent,
   Fragment,
   MouseEventHandler,
+  useCallback,
 } from 'react';
 import clsx from 'clsx';
-import s from './Swiper.module.css';
-  
+import * as _s from './Swiper.module.css';
+
+const s: Record<string, string> = _s as any;
+
 /**
  * Time to miliseconds of change animation by card left value
  */
@@ -45,6 +50,7 @@ export interface Swipe {
 /**
  * Callback for get next or previous card content
  */
+// eslint-disable-next-line no-unused-vars
 export type GetSwipeHandler = (oldId: number) => Promise<Swipe>;
 
 /**
@@ -91,6 +97,7 @@ export interface SwiperProps {
   /**
    * On swipe callback
    */
+  // eslint-disable-next-line no-unused-vars
   onSwipe?: (currentId: number | null | undefined) => void;
 
   /**
@@ -107,6 +114,7 @@ export interface SwiperProps {
    * Show dots
    */
   dots?: {
+    inactive: boolean;
     list: number[];
     active: number;
   };
@@ -118,7 +126,7 @@ export interface SwiperProps {
 const getSwipes = (prev: Swipe, current: Swipe, next: Swipe, swipes: SwipeFull[]): SwipeFull[] => {
   if (
     (prev?.id === current?.id || current?.id === next?.id || next?.id === prev?.id) &&
-    swipes.length
+    swipes.length !== 0
   ) {
     return swipes;
   }
@@ -197,8 +205,8 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
         next || getDefaultSwipe(),
         oldSwipes
       ),
- 
-    [next, prev, current]
+
+    [next, prev, current, defaultCurrent]
   );
 
   oldSwipes = swipes;
@@ -206,7 +214,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
   /**
    * Get new or exists ref by id
    */
-  const getRef = (id: number): typeof refs[0] => {
+  const getRef = (id: number): (typeof refs)[0] => {
     refs[id] = refs[id] ? refs[id] : createRef<HTMLDivElement>();
     return refs[id];
   };
@@ -287,9 +295,9 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
   );
 
   const startSwipe = useMemo(
-    () => (_next: Swipe | undefined, _prev: Swipe | undefined, _left: number) => {
+    () => (_next: Swipe | undefined, _prev: Swipe | undefined, __left: number) => {
       setGoClassHandler(_next, _prev);
-      setLeft(_left);
+      setLeft(__left);
     },
     [setGoClassHandler]
   );
@@ -313,33 +321,32 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
     []
   );
 
-  const goSwipe = useMemo(
-    () =>
-      async (
-        {
-          newNext,
-          newPrev,
-          coeff,
-        }: {
-          newPrev: Swipe | undefined;
-          newNext: Swipe | undefined;
-          coeff: 1 | -1;
-        },
-        _next: Swipe | undefined,
-        _prev: Swipe | undefined
-      ) => {
-        if (_next?.id === null || _prev?.id === null) {
-          goSwipeBack();
-          return 1;
-        }
-        if (onSwipe !== undefined) {
-          onSwipe(_next?.id || _prev?.id);
-        }
-        startSwipe(_next, _prev, windowWidth * coeff);
-        await wait(SWIPE_TRANSITION_TIMEOUT);
-        endSwipe({ _prev: newPrev, _current: _next || _prev, _next: newNext });
-        return 0;
+  const goSwipe = useCallback(
+    async (
+      {
+        newNext,
+        newPrev,
+        coeff,
+      }: {
+        newPrev: Swipe | undefined;
+        newNext: Swipe | undefined;
+        coeff: 1 | -1;
       },
+      _next: Swipe | undefined,
+      _prev: Swipe | undefined
+    ) => {
+      if (_next?.id === null || _prev?.id === null) {
+        goSwipeBack();
+        return 1;
+      }
+      if (onSwipe !== undefined) {
+        onSwipe(_next?.id || _prev?.id);
+      }
+      startSwipe(_next, _prev, windowWidth * coeff);
+      await wait(SWIPE_TRANSITION_TIMEOUT);
+      endSwipe({ _prev: newPrev, _current: _next || _prev, _next: newNext });
+      return 0;
+    },
     [endSwipe, goSwipeBack, onSwipe, startSwipe, windowWidth]
   );
 
@@ -429,10 +436,13 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
    * Touch event wrapper
    */
   const onTouchWrapper =
-    (name: TouchName): ((event: TouchEvent<HTMLDivElement>) => void) =>
-    (e): void => {
-      onTouchHandler(name, e);
-    };
+    // eslint-disable-next-line no-unused-vars, prettier/prettier
+
+
+      (name: TouchName): ((event: TouchEvent<HTMLDivElement>) => void) =>
+      (e): void => {
+        onTouchHandler(name, e);
+      };
 
   /**
    * On next or previous button click handler
@@ -516,11 +526,11 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
    */
   const startInvitationAnimation = useMemo(
     () =>
-      async (prev: Swipe, next: Swipe): Promise<void> => {
-        if (prev.id) {
+      async (_prev: Swipe, _next: Swipe): Promise<void> => {
+        if (_prev.id) {
           await infitationAnimationHandler(windowWidth / 5.5);
         }
-        if (next.id) {
+        if (_next.id) {
           await infitationAnimationHandler((windowWidth / 5.5) * -1);
         }
       },
@@ -531,6 +541,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
    * Handler on click by dot
    */
   const clickDotHandler: MouseEventHandler<HTMLDivElement> = useMemo(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     () => async (e: any) => {
       const { target } = e;
       const tabindex = target?.getAttribute('tabindex');
@@ -560,6 +571,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
         newNext = await getNext(newCurrent?.id || 0);
         newPrev = await getPrev(newCurrent?.id || 0);
       }
+
       if (currentId < active) {
         await goSwipe({ newPrev, newNext, coeff: -1 }, newCurrent, undefined);
       } else {
@@ -609,6 +621,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
    * Auto slide
    */
   useEffect(() => {
+    // eslint-disable-next-line no-undef
     let clearAnimate: NodeJS.Timeout;
     if (durationAnimation) {
       clearAnimate = setInterval(() => {
@@ -635,7 +648,8 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
    * Save window width
    */
   useEffect(() => {
-    const _windowWidth = document.body.clientWidth;
+    const _windowWidth =
+      containerRef.current?.parentElement?.clientWidth || document.body.clientWidth;
     if (!windowWidth && _windowWidth) {
       setWindowWidth(_windowWidth);
     }
@@ -661,7 +675,8 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
       const _width = containerRef?.current?.parentElement?.getBoundingClientRect()?.width;
       const _height = containerRef?.current?.parentElement?.getBoundingClientRect()?.height;
       const __left = containerRef?.current?.parentElement?.getBoundingClientRect()?.left;
-      const _windowWidth = document.body.clientWidth;
+      const _windowWidth =
+        containerRef.current?.parentElement?.clientWidth || document.body.clientWidth;
       if (_width && _height) {
         setWidth(_width);
         setHeight(_height);
@@ -711,8 +726,16 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
                 item.type === 'current'
                   ? { width, height, left }
                   : item.type === 'prev'
-                  ? { width, height, left: left - window.innerWidth }
-                  : { width, height, left: left + window.innerWidth }
+                    ? {
+                        width,
+                        height,
+                        left: left - windowWidth,
+                      }
+                    : {
+                        width,
+                        height,
+                        left: left + windowWidth,
+                      }
               }
               className={clsx(
                 s.card,
@@ -730,8 +753,16 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
                 item.type === 'current'
                   ? { width, height, left }
                   : item.type === 'prev'
-                  ? { width, height, left: left - windowWidth }
-                  : { width, height, left: left + windowWidth }
+                    ? {
+                        width,
+                        height,
+                        left: left - windowWidth,
+                      }
+                    : {
+                        width,
+                        height,
+                        left: left + windowWidth,
+                      }
               }
               className={clsx(
                 s.card,
@@ -794,19 +825,23 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
           </button>
         </div>
       )}
-      {dots && (
-        <div className={s.dots}>
+      {dots !== undefined && (
+        <div className={clsx(s.dots)}>
           {dots.list.map((item) => (
             <div
               role="button"
-              onClick={clickDotHandler}
+              onClick={dots.inactive ? undefined : clickDotHandler}
               tabIndex={item}
               key={item}
-              className={clsx(s.dot, current?.id === item ? s.active : '')}
+              className={clsx(
+                s.dot,
+                current?.id === item ? s.active : '',
+                dots.inactive ? s.dot__inactive : ''
+              )}
             />
           ))}
         </div>
       )}
     </div>
   );
-};
+}

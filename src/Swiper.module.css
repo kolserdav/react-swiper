@@ -54,6 +54,7 @@
 .content {
   border-radius: 2px;
   position: relative;
+  margin: 5px;
   width: calc(100% - 48px);
   height: calc(100% - 48px);
   -webkit-box-shadow: 0px 0px 5px 1px rgba(34, 60, 80, 0.14);
@@ -131,6 +132,10 @@
   margin: 2px;
   border: 1px solid gray;
   border-radius: 50%;
+}
+
+.dot__inactive {
+  cursor: default !important;
 }
 
 .dot.active {

@@ -3,7 +3,7 @@ declare module '*.module.css' {
   export default classes;
 }
 
-declare module 'mini-css-extract-plugin' {
-  const classes: { [key: string]: string };
-  export default 1;
+declare module '*.css' {
+  const content: string;
+  export default content;
 }
