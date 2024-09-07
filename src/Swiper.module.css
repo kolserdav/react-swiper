@@ -54,12 +54,17 @@
 .content {
   border-radius: 2px;
   position: relative;
-  margin: 5px;
   width: calc(100% - 48px);
   height: calc(100% - 48px);
   -webkit-box-shadow: 0px 0px 5px 1px rgba(34, 60, 80, 0.14);
   -moz-box-shadow: 0px 0px 5px 1px rgba(34, 60, 80, 0.14);
   box-shadow: 0px 0px 5px 1px rgba(34, 60, 80, 0.14);
+}
+
+.content_dark {
+  -webkit-box-shadow: 0px 0px 5px 1px rgba(233, 235, 236, 0.8);
+  -moz-box-shadow: 0px 0px 5px 1px rgba(233, 235, 236, 0.8);
+  box-shadow: 0px 0px 5px 1px rgba(233, 235, 236, 0.8);
 }
 
 .button {
@@ -107,13 +112,28 @@
   padding: 8px;
   border-radius: 50%;
   overflow: visible;
-  color: rgba(0, 0, 0, 0.54);
   transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
-.icon__button:hover {
+
+.icon__button_light {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.icon__button_dark {
+  color: rgba(233, 235, 236, 0.8)
+}
+
+.icon__button_dark:hover {
+  background-color: rgba(255, 255, 255, 0.084)
+}
+.icon__button_dark:active {
+  background-color: rgba(233, 235, 236, 0.009)
+}
+
+.icon__button_light:hover {
   background-color: rgba(0, 0, 0, 0.054);
 }
-.icon__button:active {
+.icon__button_light:active {
   background-color: rgba(0, 0, 0, 0.007);
 }
 

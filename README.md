@@ -117,6 +117,11 @@ interface SwiperProps {
     list: number[];
     active: number;
   };
+
+  /**
+   * Makes dark colors as light
+   */
+  darkTheme?: boolean;
 }
 ```
 

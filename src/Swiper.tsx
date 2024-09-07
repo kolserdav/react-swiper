@@ -118,6 +118,11 @@ export interface SwiperProps {
     list: number[];
     active: number;
   };
+
+  /**
+   * Makes dark colors as light
+   */
+  darkTheme?: boolean;
 }
 
 /**
@@ -174,6 +179,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
     durationAnimation,
     blockSwipe,
     dots,
+    darkTheme,
   } = props;
 
   const [current, setCurrent] = useState<Swipe>();
@@ -404,7 +410,6 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
             startClientY = clientY;
             lastLeft = _left;
             startTime = new Date().getTime();
-
             break;
           case 'onTouchMove':
             if (!blockSwipe) {
@@ -437,8 +442,6 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
    */
   const onTouchWrapper =
     // eslint-disable-next-line no-unused-vars, prettier/prettier
-
-
       (name: TouchName): ((event: TouchEvent<HTMLDivElement>) => void) =>
       (e): void => {
         onTouchHandler(name, e);
@@ -744,7 +747,9 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
               ref={getRef(item.id)}
             >
               {/** Block of content */}
-              <div className={clsx(s.content, className)}>{item.children}</div>
+              <div className={clsx(className, s.content, darkTheme ? s.content_dark : '')}>
+                {item.children}
+              </div>
             </div>
           )}
           {item.id === null && (
@@ -774,7 +779,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
                 height="24px"
                 viewBox="0 0 24 24"
                 width="24px"
-                fill="#000000"
+                fill={darkTheme ? '#ffffff' : '#000000'}
               >
                 <path d="M0 0h24v24H0V0z" fill="none" />
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8z" />
@@ -786,7 +791,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
       {typeof isMobile !== 'undefined' && !isMobile && prev?.id !== null && (
         <div className={clsx(s.button, s.button__prev)}>
           <button
-            className={s.icon__button}
+            className={clsx(s.icon__button, darkTheme ? s.icon__button_dark : s.icon__button_light)}
             type="button"
             disabled={load || isMobile}
             onClick={clickPrevHandler}
@@ -796,7 +801,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
               height="24px"
               viewBox="0 0 24 24"
               width="24px"
-              fill="#000000"
+              fill={darkTheme ? '#ffffff' : '#000000'}
             >
               <path d="M0 0h24v24H0V0z" fill="none" />
               <path d="M10.02 6L8.61 7.41 13.19 12l-4.58 4.59L10.02 18l6-6-6-6z" />
@@ -807,7 +812,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
       {typeof isMobile !== 'undefined' && !isMobile && next?.id !== null && (
         <div className={clsx(s.button, s.button__next)}>
           <button
-            className={s.icon__button}
+            className={clsx(s.icon__button, darkTheme ? s.icon__button_dark : s.icon__button_light)}
             type="button"
             disabled={load || isMobile}
             onClick={clickNextHandler}
@@ -817,7 +822,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
               height="24px"
               viewBox="0 0 24 24"
               width="24px"
-              fill="#000000"
+              fill={darkTheme ? '#ffffff' : '#000000'}
             >
               <path d="M0 0h24v24H0V0z" fill="none" />
               <path d="M10.02 6L8.61 7.41 13.19 12l-4.58 4.59L10.02 18l6-6-6-6z" />

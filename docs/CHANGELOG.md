@@ -1,5 +1,9 @@
 # Changelog
 
+**4.3.5-07.09.2024**
+
+- Add `darkTheme` property
+
 **4.3.4-07.09.2024**
 
 - Rewrite from `create-react-app` to `create-next-app`
