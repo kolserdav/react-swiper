@@ -35,7 +35,7 @@ export const SWIPE_TRANSITION_TIMEOUT = 400;
 /**
  * Minimum swipe speed regardless of distance
  */
-export const SWIPE_ON_EVENT_SPEED = 0.7;
+export const SWIPE_ON_EVENT_SPEED = 0.5;
 
 /**
  * One of swipe card
