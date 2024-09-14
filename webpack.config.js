@@ -1,12 +1,18 @@
 // @ts-check
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { writeFileSync } = require('fs');
+
+const disDirPath = path.resolve(__dirname, 'dist');
 
 /**
- * @type {import('webpack').Configuration}
+ * @param {{WEBPACK_BUILD?: boolean}} param0
+ * @param {import('webpack').Configuration} argv
+ * @returns {import('webpack').Configuration}
  */
-const config = {
-  target: 'node',
+const config = ({ WEBPACK_BUILD }, argv) => ({
+  mode: WEBPACK_BUILD ? 'production' : 'development',
+  target: 'web',
   entry: './src/Swiper.tsx',
   context: __dirname,
   node: {
@@ -14,7 +20,7 @@ const config = {
   },
   devtool: 'source-map',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: disDirPath,
     filename: 'Swiper.js',
     library: 'ReactSwiper',
     libraryTarget: 'umd',
@@ -42,7 +48,7 @@ const config = {
     }),
   ],
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js', '.css'],
     alias: {
       react: path.resolve(__dirname, './node_modules/react'),
     },
@@ -50,6 +56,6 @@ const config = {
   externals: {
     react: 'react',
   },
-};
+});
 
 module.exports = config;

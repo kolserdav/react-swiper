@@ -1,6 +1,6 @@
 {
   "name": "@kolserdav/swiper",
-  "version": "4.3.6",
+  "version": "4.3.7",
   "description": "Simple and powerfull react swiper component",
   "author": "kolserdav",
   "license": "MIT",
@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "dev": "next dev",
-    "compile": "rimraf dist && webpack --mode production",
+    "compile": "rimraf dist/* && webpack --mode production",
     "compile:dev": "webpack --mode development",
     "compile:watch": "webpack server --mode development",
     "build": "next build",
