@@ -607,7 +607,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
   useEffect(() => {
     const _width = containerRef?.current?.parentElement?.getBoundingClientRect()?.width;
     const _height = containerRef?.current?.parentElement?.getBoundingClientRect()?.height;
-    if (_width && !width && _height && !height) {
+    if (_width && _height) {
       setWidth(_width);
       setHeight(_height);
     }
