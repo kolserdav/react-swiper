@@ -8,10 +8,9 @@
  * Copyright: kolserdav, All rights reserved (c)
  * Create Date: Fri Sep 06 2024 18:44:44 GMT+0700 (Krasnoyarsk Standard Time)
  ******************************************************************************************/
-import React from 'react';
-import s from "@/styles/Home.module.css";
-import ReactSwiper, { GetSwipeHandler, Swipe } from "@/src/Swiper";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
+import s from '@/styles/Home.module.css';
+import ReactSwiper, { GetSwipeHandler, Swipe } from '@/src/Swiper';
 
 const COUNT = 6;
 const LAG = 25;
@@ -42,7 +41,7 @@ const getPrevios: GetSwipeHandler = async (old) => {
   });
 };
 
-const App = (): React.ReactElement => {
+function App() {
   const [current, setCurrent] = useState<Swipe>();
   useEffect(() => {
     if (!current) {
@@ -60,16 +59,17 @@ const App = (): React.ReactElement => {
           defaultCurrent={current}
           getNext={getNext}
           getPrev={getPrevios}
-          invitationAnimation={true}
+          invitationAnimation
           className="card__content"
           dots={{
             list: [0, 1, 2, 3, 4, 5, 6],
             active: current.id || 1,
+            inactive: false,
           }}
         />
       )}
     </div>
   );
-};
+}
 
 export default App;

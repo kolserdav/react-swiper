@@ -155,7 +155,7 @@ const getDefaultSwipe = (): Swipe => ({
 });
 
 const refs: {
-  [key: number]: RefObject<HTMLDivElement>;
+  [key: number]: RefObject<HTMLDivElement | null>;
 } = {};
 
 let startClientX: number;
@@ -444,8 +444,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
   const onTouchWrapper =
     // eslint-disable-next-line no-unused-vars, prettier/prettier
 
-
-      (name: TouchName): ((event: TouchEvent<HTMLDivElement>) => void) =>
+    (name: TouchName): ((event: TouchEvent<HTMLDivElement>) => void) =>
       (e): void => {
         onTouchHandler(name, e);
       };
@@ -607,7 +606,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
   useEffect(() => {
     const _width = containerRef?.current?.parentElement?.getBoundingClientRect()?.width;
     const _height = containerRef?.current?.parentElement?.getBoundingClientRect()?.height;
-    if (_width && !width && _height && !height) {
+    if (_width && _height) {
       setWidth(_width);
       setHeight(_height);
     }

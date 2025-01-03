@@ -20,12 +20,13 @@
         "./*"
       ]
     },
-    "noEmit": true
+    "noEmit": true,
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx",
+    "**/*.tsx"
   ],
   "exclude": [
     "node_modules",
