@@ -122,6 +122,11 @@ interface SwiperProps {
    * Makes dark colors as light
    */
   darkTheme?: boolean;
+
+  /**
+   * Component height
+   */
+  height?: number;
 }
 ```
 

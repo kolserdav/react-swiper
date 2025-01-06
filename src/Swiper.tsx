@@ -73,6 +73,11 @@ export interface SwiperProps {
   /**
    * Current card content
    */
+  height?: number;
+
+  /**
+   * Current card content
+   */
   defaultCurrent: Swipe;
 
   /**
@@ -181,6 +186,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
     blockSwipe,
     dots,
     darkTheme,
+    height: __height
   } = props;
 
   const [current, setCurrent] = useState<Swipe>();
@@ -189,7 +195,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
   const [prePrev, setPrePrev] = useState<Swipe>();
   const [postNext, setPostNext] = useState<Swipe>();
   const [windowWidth, setWindowWidth] = useState<number>(0);
-  const [height, setHeight] = useState<number>(0);
+  const [height, setHeight] = useState<number>(__height || 0);
   const [width, setWidth] = useState<number>(0);
   const [_left, _setLeft] = useState<number>(0);
   const [left, setLeft] = useState<number>(0);
@@ -604,13 +610,19 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
    * Set width and height
    */
   useEffect(() => {
-    const _width = containerRef?.current?.parentElement?.getBoundingClientRect()?.width;
-    const _height = containerRef?.current?.parentElement?.getBoundingClientRect()?.height;
+    const parentElement = containerRef?.current?.parentElement;
+    const rects = parentElement?.getBoundingClientRect();
+    const _width = rects?.width;
+    const _height = rects?.height;
     if (_width && _height) {
       setWidth(_width);
-      setHeight(_height);
+      if (!__height) {
+        setHeight(_height);
+      } else {
+        setHeight(__height)
+      }
     }
-  }, [containerRef, width, height]);
+  }, [containerRef, width, height, __height]);
 
   /**
    * Save container left
@@ -677,14 +689,17 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
    */
   useEffect(() => {
     const resizeHandler = (): void => {
-      const _width = containerRef?.current?.parentElement?.getBoundingClientRect()?.width;
-      const _height = containerRef?.current?.parentElement?.getBoundingClientRect()?.height;
-      const __left = containerRef?.current?.parentElement?.getBoundingClientRect()?.left;
+      const parentElement = containerRef?.current?.parentElement;
+      const rects = parentElement?.getBoundingClientRect();
+      const _width = rects?.width;
+      const _height = rects?.height;
+      const __left = rects?.left;
       const _windowWidth =
         containerRef.current?.parentElement?.clientWidth || document.body.clientWidth;
       if (_width && _height) {
         setWidth(_width);
         setHeight(_height);
+
       }
       if (__left) {
         setLeft(__left);
