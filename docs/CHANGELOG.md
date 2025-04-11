@@ -1,5 +1,9 @@
 # Changelog
 
+**4.3.11-11.04.2025**
+
+- Fixed shift when resize window
+
 **4.3.5-07.09.2024**
 
 - Add `darkTheme` property

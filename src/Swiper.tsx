@@ -691,16 +691,11 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
       const rects = parentElement?.getBoundingClientRect();
       const _width = rects?.width;
       const _height = rects?.height;
-      const __left = rects?.left;
       const _windowWidth =
         containerRef.current?.parentElement?.clientWidth || document.body.clientWidth;
       if (_width && _height) {
         setWidth(_width);
         setHeight(_height);
-
-      }
-      if (__left) {
-        setLeft(__left);
       }
       if (_windowWidth) {
         setWindowWidth(_windowWidth);
