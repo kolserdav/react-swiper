@@ -1,5 +1,5 @@
 {
-  "eslint.validate": ["javascript", "typescript"],
+ "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "eslint.workingDirectories": ["./"],
   "eslint.format.enable": true,
   "editor.codeActionsOnSave": {
@@ -12,10 +12,7 @@
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[css]": {
+  "[scss]": {
     "editor.defaultFormatter": "stylelint.vscode-stylelint",
   }
 }

@@ -49,7 +49,7 @@ export interface Swipe {
 /**
  * Callback for get next or previous card content
  */
-// eslint-disable-next-line no-unused-vars
+
 export type GetSwipeHandler = (oldId: number) => Promise<Swipe>;
 
 /**
@@ -101,7 +101,7 @@ export interface SwiperProps {
   /**
    * On swipe callback
    */
-  // eslint-disable-next-line no-unused-vars
+
   onSwipe?: (currentId: number | null | undefined) => void;
 
   /**
@@ -184,7 +184,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
     blockSwipe,
     dots,
     darkTheme,
-    height: __height
+    height: __height,
   } = props;
 
   const [current, setCurrent] = useState<Swipe>();
@@ -446,12 +446,10 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
    * Touch event wrapper
    */
   const onTouchWrapper =
-    // eslint-disable-next-line no-unused-vars, prettier/prettier
-
     (name: TouchName): ((event: TouchEvent<HTMLDivElement>) => void) =>
-      (e): void => {
-        onTouchHandler(name, e);
-      };
+    (e): void => {
+      onTouchHandler(name, e);
+    };
 
   /**
    * On next or previous button click handler
@@ -617,7 +615,7 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
       if (!__height) {
         setHeight(_height);
       } else {
-        setHeight(__height)
+        setHeight(__height);
       }
     }
   }, [containerRef, width, height, __height]);
@@ -636,7 +634,6 @@ export default function ReactSwiper(props: SwiperProps): React.ReactElement {
    * Auto slide
    */
   useEffect(() => {
-    // eslint-disable-next-line no-undef
     let clearAnimate: NodeJS.Timeout;
     if (durationAnimation) {
       clearAnimate = setInterval(() => {
