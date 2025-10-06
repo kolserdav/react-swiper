@@ -34,6 +34,7 @@ const config = [
       node: true,
       browser: true,
     },
+    ignorePatterns: ['.next', 'dist', 'node_modules', 'tmp'],
     rules: {
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 1,
