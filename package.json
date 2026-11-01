@@ -49,7 +49,7 @@
     "eslint-plugin-prettier": "^5.5.7",
     "eslint-plugin-react-hooks": "^7.1.1",
     "mini-css-extract-plugin": "^2.10.2",
-    "next": "16.4.0",
+    "next": "16.4.1",
     "prettier": "^3.9.10",
     "react-app": "^1.1.2",
     "rimraf": "^6.1.3",
